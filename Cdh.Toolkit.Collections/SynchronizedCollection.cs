@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -33,7 +33,7 @@ namespace Cdh.Toolkit.Collections
 
         public SynchronizedCollection(ICollection<T> collection,
             EnumerateBehavior behavior) :
-            this(collection, behavior, new ReaderWriterLockSlim(LockRecursionPolicy.SupportsRecursion))
+            this(collection, behavior, new ReaderWriterLockSlim())
         {
         }
 
