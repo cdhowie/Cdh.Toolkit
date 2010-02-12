@@ -191,6 +191,7 @@ namespace Cdh.Toolkit.Json
             // An optional '.'.
             if ((char)reader.Peek() == '.')
             {
+                reader.Read();
                 sb.Append('.');
 
                 // More digits
