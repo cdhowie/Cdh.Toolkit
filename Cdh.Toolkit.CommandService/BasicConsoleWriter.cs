@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 
 using Cdh.Toolkit.Extensions.Events;
+using System.IO;
 
 namespace Cdh.Toolkit.CommandService
 {
     public class BasicConsoleWriter : IConsoleWriter
     {
-        private readonly LineWrittenEventArgs BlankLineEventArgs;
+        protected readonly LineWrittenEventArgs BlankLineEventArgs;
 
         public BasicConsoleWriter(string name)
         {
@@ -33,7 +34,11 @@ namespace Cdh.Toolkit.CommandService
 
         public void WriteLine(string line)
         {
-            LineWritten.Fire(this, new LineWrittenEventArgs(line, this));
+            var handler = LineWritten;
+            if (handler == null)
+                return;
+
+            WriteLineWithNewlines(handler, line);
         }
 
         public void WriteLine(string format, params object[] arguments)
@@ -42,7 +47,47 @@ namespace Cdh.Toolkit.CommandService
             if (handler == null)
                 return;
 
-            handler(this, new LineWrittenEventArgs(string.Format(format, arguments), this));
+            WriteLineWithNewlines(handler, string.Format(format, arguments));
+        }
+
+        protected void WriteLineWithNewlines(EventHandler<LineWrittenEventArgs> handler, string line)
+        {
+            if (!line.Contains('\r') && !line.Contains('\n'))
+            {
+                handler(this, new LineWrittenEventArgs(line, this));
+                return;
+            }
+
+            foreach (var i in GetLines(line))
+                handler(this, i);
+        }
+
+        private IEnumerable<LineWrittenEventArgs> GetLines(string str)
+        {
+            string line;
+
+            int blanks = 0;
+
+            using (StringReader reader = new StringReader(str))
+            {
+                while ((line = reader.ReadLine()) != null)
+                {
+                    if (line.Trim() == "")
+                    {
+                        blanks++;
+                    }
+                    else
+                    {
+                        while (blanks > 0)
+                        {
+                            yield return BlankLineEventArgs;
+                            blanks--;
+                        }
+
+                        yield return new LineWrittenEventArgs(line, this);
+                    }
+                }
+            }
         }
 
         #endregion
