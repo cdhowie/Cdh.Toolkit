@@ -28,7 +28,7 @@ namespace Cdh.Toolkit.CommandService.Commands
 
         public void Execute(ICommandContext context, IList<string> arguments)
         {
-            context.Service.FireUserTerminated();
+            context.Service.FireTerminatedByUser();
         }
 
         #endregion

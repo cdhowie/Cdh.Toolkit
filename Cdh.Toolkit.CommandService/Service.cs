@@ -20,7 +20,7 @@ namespace Cdh.Toolkit.CommandService
         private ReaderWriterLockSlim ConsoleWriterMapLock = new ReaderWriterLockSlim();
 
         public event EventHandler<LineWrittenEventArgs> ConsoleLineWritten;
-        public event EventHandler UserTerminated;
+        public event EventHandler TerminatedByUser;
 
         public IConsoleWriter NormalWriter { get; private set; }
         public IConsoleWriter ErrorWriter { get; private set; }
@@ -245,9 +245,9 @@ namespace Cdh.Toolkit.CommandService
             ExecuteCommand(command, arguments, context);
         }
 
-        protected internal void FireUserTerminated()
+        protected internal void FireTerminatedByUser()
         {
-            UserTerminated.Fire(this);
+            TerminatedByUser.Fire(this);
         }
 
         #region ICommandContext Members
