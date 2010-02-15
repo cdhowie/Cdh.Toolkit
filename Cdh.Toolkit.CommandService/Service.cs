@@ -142,18 +142,18 @@ namespace Cdh.Toolkit.CommandService
             ConsoleLineWritten.Fire(this, args);
         }
 
-        protected virtual bool HandleException(ICommand command, Exception exception)
+        protected virtual bool HandleException(ICommand command, ICommandContext context, Exception exception)
         {
             CommandException commandException = exception as CommandException;
             if (commandException != null)
             {
-                ErrorWriter.WriteLine(commandException.Message);
+                context.ErrorWriter.WriteLine(commandException.Message);
             }
             else
             {
-                ErrorWriter.WriteLine("Unhandled exception while executing command " + command.Name + ":");
-                ErrorWriter.WriteLine();
-                ErrorWriter.WriteLine(exception.ToString());
+                context.ErrorWriter.WriteLine("Unhandled exception while executing command " + command.Name + ":");
+                context.ErrorWriter.WriteLine();
+                context.ErrorWriter.WriteLine(exception.ToString());
             }
 
             return true;
@@ -183,7 +183,7 @@ namespace Cdh.Toolkit.CommandService
 
             if (command == null)
             {
-                ErrorWriter.WriteLine("No such command: " + commandName);
+                context.ErrorWriter.WriteLine("No such command: " + commandName);
                 return;
             }
 
@@ -201,7 +201,7 @@ namespace Cdh.Toolkit.CommandService
             }
             catch (Exception ex)
             {
-                if (!HandleException(command, ex))
+                if (!HandleException(command, context, ex))
                     throw;
             }
         }
@@ -226,7 +226,7 @@ namespace Cdh.Toolkit.CommandService
 
             if (command == null)
             {
-                ErrorWriter.WriteLine("No such command: " + commandName);
+                context.ErrorWriter.WriteLine("No such command: " + commandName);
                 return;
             }
 
@@ -239,7 +239,23 @@ namespace Cdh.Toolkit.CommandService
             else
             {
                 ICommandArgumentParser parser = (command as ICommandArgumentParser) ?? CommandArgumentParser;
-                arguments = parser.ParseArguments(parts[1], command.MaxArguments) ?? emptyArgs;
+
+                try
+                {
+                    arguments = parser.ParseArguments(parts[1], command.MaxArguments) ?? emptyArgs;
+                }
+                catch (ArgumentsParseException ex)
+                {
+                    context.ErrorWriter.WriteLine(ex.Message);
+                    return;
+                }
+                catch (Exception ex)
+                {
+                    context.ErrorWriter.WriteLine("Exception while parsing arguments for command " + command.Name + ":");
+                    context.ErrorWriter.WriteLine();
+                    context.ErrorWriter.WriteLine(ex.ToString());
+                    return;
+                }
             }
 
             ExecuteCommand(command, arguments, context);

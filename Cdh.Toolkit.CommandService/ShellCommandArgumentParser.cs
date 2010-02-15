@@ -1,0 +1,87 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.IO;
+
+namespace Cdh.Toolkit.CommandService
+{
+    public sealed class ShellCommandArgumentParser : ICommandArgumentParser
+    {
+        public static readonly ShellCommandArgumentParser Instance = new ShellCommandArgumentParser();
+
+        private ShellCommandArgumentParser() { }
+
+        #region ICommandArgumentParser Members
+
+        public IList<string> ParseArguments(string arguments, int maxArguments)
+        {
+            return DoParse(arguments).ToList();
+        }
+
+        private IEnumerable<string> DoParse(string arguments)
+        {
+            StringBuilder argBuilder = new StringBuilder();
+            char quote = '\0';
+            bool escaped = false;
+
+            foreach (char c in arguments)
+            {
+                if (escaped)
+                {
+                    switch (c)
+                    {
+                        case 'n':
+                        case 'r':
+                            argBuilder.Append('\n');
+                            break;
+
+                        case '\'':
+                        case '"':
+                            argBuilder.Append(c);
+                            break;
+
+                        default:
+                            argBuilder.Append('\\');
+                            argBuilder.Append(c);
+                            break;
+                    }
+
+                    escaped = false;
+                }
+                else if (c == ' ')
+                {
+                    if (quote != '\0')
+                    {
+                        argBuilder.Append(' ');
+                    }
+                    else if (argBuilder.Length != 0)
+                    {
+                        yield return argBuilder.ToString();
+                        argBuilder.Length = 0;
+                    }
+                }
+                else if (quote != '\0' && c == quote)
+                {
+                    quote = '\0';
+                }
+                else if (c == '\\')
+                {
+                    escaped = true;
+                }
+                else if (c == '\'' || c == '"')
+                {
+                    quote = c;
+                }
+            }
+
+            if (quote != '\0')
+                throw new InvalidDataException("Unable to parse arguments: unterminated " + quote);
+
+            if (argBuilder.Length != 0)
+                yield return argBuilder.ToString();
+        }
+
+        #endregion
+    }
+}
