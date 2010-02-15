@@ -29,6 +29,11 @@ namespace Cdh.Toolkit.CommandService
 
         public Service Service { get; private set; }
 
+        public virtual IConsoleWriter GetConsoleWriter(string name)
+        {
+            return Service.GetConsoleWriter(name);
+        }
+
         #endregion
     }
 }

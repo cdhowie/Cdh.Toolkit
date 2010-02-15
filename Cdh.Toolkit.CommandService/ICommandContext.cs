@@ -10,5 +10,7 @@ namespace Cdh.Toolkit.CommandService
         IConsoleWriter NormalWriter { get; }
         IConsoleWriter ErrorWriter { get; }
         Service Service { get; }
+
+        IConsoleWriter GetConsoleWriter(string name);
     }
 }

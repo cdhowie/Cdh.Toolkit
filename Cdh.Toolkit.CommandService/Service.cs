@@ -116,7 +116,7 @@ namespace Cdh.Toolkit.CommandService
             return true;
         }
 
-        public virtual IConsoleWriter GetWriter(string name)
+        public IConsoleWriter GetConsoleWriter(string name)
         {
             using (ConsoleWriterMapLock.Read())
                 return ConsoleWriterMap.GetOrDefault(name);
