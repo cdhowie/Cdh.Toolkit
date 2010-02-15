@@ -11,6 +11,7 @@ namespace Cdh.Toolkit.CommandService
 
         event EventHandler<LineWrittenEventArgs> LineWritten;
 
+        void WriteLine();
         void WriteLine(string line);
         void WriteLine(string format, params object[] arguments);
     }

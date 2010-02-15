@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="BasicCommandContext.cs" />
     <Compile Include="BasicConsoleWriter.cs" />
+    <Compile Include="CommandException.cs" />
     <Compile Include="Commands\HelpCommand.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="ICommandArgumentParser.cs" />

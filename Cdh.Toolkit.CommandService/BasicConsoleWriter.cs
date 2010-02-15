@@ -9,12 +9,15 @@ namespace Cdh.Toolkit.CommandService
 {
     public class BasicConsoleWriter : IConsoleWriter
     {
+        private readonly LineWrittenEventArgs BlankLineEventArgs;
+
         public BasicConsoleWriter(string name)
         {
             if (string.IsNullOrEmpty(name))
                 throw new ArgumentException("Is null or empty", "name");
 
             Name = name;
+            BlankLineEventArgs = new LineWrittenEventArgs("", this);
         }
 
         #region IConsoleWriter Members
@@ -22,6 +25,11 @@ namespace Cdh.Toolkit.CommandService
         public string Name { get; private set; }
 
         public event EventHandler<LineWrittenEventArgs> LineWritten;
+
+        public void WriteLine()
+        {
+            LineWritten.Fire(this, BlankLineEventArgs);
+        }
 
         public void WriteLine(string line)
         {

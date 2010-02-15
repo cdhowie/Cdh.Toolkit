@@ -95,6 +95,23 @@ namespace Cdh.Toolkit.CommandService
             ConsoleLineWritten.Fire(this, args);
         }
 
+        protected virtual bool HandleException(ICommand command, Exception exception)
+        {
+            CommandException commandException = exception as CommandException;
+            if (commandException != null)
+            {
+                ErrorWriter.WriteLine(commandException.Message);
+            }
+            else
+            {
+                ErrorWriter.WriteLine("Unhandled exception while executing command " + command.Name + ":");
+                ErrorWriter.WriteLine();
+                ErrorWriter.WriteLine(exception.ToString());
+            }
+
+            return true;
+        }
+
         public virtual void ExecuteCommand(string commandName)
         {
             ExecuteCommand(commandName, this);
@@ -123,10 +140,23 @@ namespace Cdh.Toolkit.CommandService
                 return;
             }
 
+            ExecuteCommand(command, arguments, context);
+        }
+
+        protected virtual void ExecuteCommand(ICommand command, IList<string> arguments, ICommandContext context)
+        {
             if (arguments == null)
                 arguments = emptyArgs;
 
-            command.Execute(context, arguments);
+            try
+            {
+                command.Execute(context, arguments);
+            }
+            catch (Exception ex)
+            {
+                if (!HandleException(command, ex))
+                    throw;
+            }
         }
 
         public virtual void ExecuteCommandLine(string commandLine)
@@ -165,7 +195,7 @@ namespace Cdh.Toolkit.CommandService
                 arguments = parser.ParseArguments(parts[1], command.MaxArguments) ?? emptyArgs;
             }
 
-            command.Execute(context, arguments);
+            ExecuteCommand(command, arguments, context);
         }
 
         protected internal void FireUserTerminated()
