@@ -22,8 +22,8 @@ namespace Cdh.Toolkit.CommandService
         public event EventHandler<LineWrittenEventArgs> ConsoleLineWritten;
         public event EventHandler UserTerminated;
 
-        public virtual IConsoleWriter NormalWriter { get; private set; }
-        public virtual IConsoleWriter ErrorWriter { get; private set; }
+        public IConsoleWriter NormalWriter { get; private set; }
+        public IConsoleWriter ErrorWriter { get; private set; }
 
         protected internal IEnumerable<ICommand> Commands
         {
@@ -74,14 +74,46 @@ namespace Cdh.Toolkit.CommandService
             writer.LineWritten += ProxyLineWritten;
 
             IConsoleWriter oldWriter;
-            using (ConsoleWriterMapLock.Write())
+
+            using (ConsoleWriterMapLock.UpgradeableRead())
             {
-                oldWriter = ConsoleWriterMap.GetOrDefault(writer.Name);
-                ConsoleWriterMap[writer.Name] = writer;
+                if (ConsoleWriterMap.ContainsKey(writer.Name) && writer.Name == "normal" || writer.Name == "error")
+                    throw new ArgumentException("Cannot replace the normal or error console writers.", "writer");
+
+                using (ConsoleWriterMapLock.Write())
+                {
+                    oldWriter = ConsoleWriterMap.GetOrDefault(writer.Name);
+                    ConsoleWriterMap[writer.Name] = writer;
+                }
             }
 
             if (oldWriter != null)
                 oldWriter.LineWritten -= ProxyLineWritten;
+        }
+
+        protected bool UnregisterCommand(string name)
+        {
+            using (CommandMapLock.Write())
+                return CommandMap.Remove(name);
+        }
+
+        protected bool UnregisterConsoleWriter(string name)
+        {
+            if (name == "normal" || name == "error")
+                return false;
+
+            IConsoleWriter oldWriter;
+            using (ConsoleWriterMapLock.UpgradeableRead())
+            {
+                if (!ConsoleWriterMap.TryGetValue(name, out oldWriter))
+                    return false;
+
+                using (ConsoleWriterMapLock.Write())
+                    ConsoleWriterMap.Remove(name);
+            }
+
+            oldWriter.LineWritten -= ProxyLineWritten;
+            return true;
         }
 
         public virtual IConsoleWriter GetWriter(string name)
