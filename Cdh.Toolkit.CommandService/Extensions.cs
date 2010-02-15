@@ -9,7 +9,9 @@ namespace Cdh.Toolkit.CommandService
     {
         public static IEnumerable<T> ResolveName<T>(this IEnumerable<T> e, string name, Func<T, string> nameSelector)
         {
-            return e.Where(i => nameSelector(i).ToLowerInvariant().StartsWith(name.ToLowerInvariant()));
+            name = name.ToLowerInvariant();
+
+            return e.Where(i => nameSelector(i).ToLowerInvariant().StartsWith(name));
         }
     }
 }
