@@ -8,7 +8,7 @@ using Cdh.Toolkit.Extensions.ReaderWriterLockSlim;
 
 namespace Cdh.Toolkit.CommandService
 {
-    public class Service : ICommandArgumentParser, ICommandContext
+    public class Service : ICommandContext
     {
         private static readonly IList<string> emptyArgs = new string[0];
         private static readonly char[] spaceCharArray = new[] { ' ' };
@@ -24,6 +24,19 @@ namespace Cdh.Toolkit.CommandService
 
         public IConsoleWriter NormalWriter { get; private set; }
         public IConsoleWriter ErrorWriter { get; private set; }
+
+        private ICommandArgumentParser commandArgumentParser;
+        protected ICommandArgumentParser CommandArgumentParser
+        {
+            get { return commandArgumentParser; }
+            set
+            {
+                if (value == null)
+                    throw new ArgumentNullException("value");
+
+                commandArgumentParser = value;
+            }
+        }
 
         protected internal IEnumerable<ICommand> Commands
         {
@@ -47,6 +60,8 @@ namespace Cdh.Toolkit.CommandService
 
         public Service()
         {
+            CommandArgumentParser = DefaultCommandArgumentParser.Instance;
+
             CommandMap = new Dictionary<string, ICommand>();
             ConsoleWriterMap = new Dictionary<string, IConsoleWriter>();
 
@@ -223,7 +238,7 @@ namespace Cdh.Toolkit.CommandService
             }
             else
             {
-                ICommandArgumentParser parser = (command as ICommandArgumentParser) ?? this;
+                ICommandArgumentParser parser = (command as ICommandArgumentParser) ?? CommandArgumentParser;
                 arguments = parser.ParseArguments(parts[1], command.MaxArguments) ?? emptyArgs;
             }
 
@@ -234,20 +249,6 @@ namespace Cdh.Toolkit.CommandService
         {
             UserTerminated.Fire(this);
         }
-
-        #region ICommandArgumentParser Members
-
-        protected virtual IList<string> ParseArguments(string arguments, int maxArguments)
-        {
-            return arguments.Split(spaceCharArray, maxArguments, StringSplitOptions.RemoveEmptyEntries);
-        }
-
-        IList<string> ICommandArgumentParser.ParseArguments(string arguments, int maxArguments)
-        {
-            return ParseArguments(arguments, maxArguments);
-        }
-
-        #endregion
 
         #region ICommandContext Members
 

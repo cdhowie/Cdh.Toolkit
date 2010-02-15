@@ -49,6 +49,7 @@
     <Compile Include="BasicConsoleWriter.cs" />
     <Compile Include="CommandException.cs" />
     <Compile Include="Commands\HelpCommand.cs" />
+    <Compile Include="DefaultCommandArgumentParser.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="ICommandArgumentParser.cs" />
     <Compile Include="ICommandContext.cs" />
