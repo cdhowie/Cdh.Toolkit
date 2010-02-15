@@ -45,12 +45,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AmbiguousCommandException.cs" />
     <Compile Include="ArgumentsParseException.cs" />
     <Compile Include="BasicCommandContext.cs" />
     <Compile Include="BasicConsoleWriter.cs" />
     <Compile Include="CommandException.cs" />
+    <Compile Include="CommandNotFoundException.cs" />
     <Compile Include="Commands\HelpCommand.cs" />
     <Compile Include="DefaultCommandArgumentParser.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="ICommandArgumentParser.cs" />
     <Compile Include="ICommandContext.cs" />

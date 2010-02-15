@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 using Cdh.Toolkit.Extensions.Collections;
@@ -38,7 +39,7 @@ namespace Cdh.Toolkit.CommandService
             }
         }
 
-        protected internal IEnumerable<ICommand> Commands
+        public IEnumerable<ICommand> Commands
         {
             get
             {
@@ -78,7 +79,7 @@ namespace Cdh.Toolkit.CommandService
                 throw new ArgumentNullException("command");
 
             using (CommandMapLock.Write())
-                CommandMap[command.Name] = command;
+                CommandMap[command.Name.ToLower()] = command;
         }
 
         protected void RegisterConsoleWriter(IConsoleWriter writer)
@@ -144,14 +145,17 @@ namespace Cdh.Toolkit.CommandService
 
         protected virtual bool HandleException(ICommand command, ICommandContext context, Exception exception)
         {
-            CommandException commandException = exception as CommandException;
-            if (commandException != null)
+            if (exception is CommandException || exception is ArgumentsParseException)
             {
-                context.ErrorWriter.WriteLine(commandException.Message);
+                context.ErrorWriter.WriteLine(exception.Message);
             }
             else
             {
-                context.ErrorWriter.WriteLine("Unhandled exception while executing command " + command.Name + ":");
+                if (command == null)
+                    context.ErrorWriter.WriteLine("Unhandled exception while resolving command:");
+                else
+                    context.ErrorWriter.WriteLine("Unhandled exception while executing command " + command.Name + ":");
+
                 context.ErrorWriter.WriteLine();
                 context.ErrorWriter.WriteLine(exception.ToString());
             }
@@ -178,12 +182,15 @@ namespace Cdh.Toolkit.CommandService
         {
             ICommand command;
 
-            using (CommandMapLock.Read())
-                command = CommandMap.GetOrDefault(commandName);
-
-            if (command == null)
+            try
             {
-                context.ErrorWriter.WriteLine("No such command: " + commandName);
+                command = ResolveCommand(commandName);
+            }
+            catch (Exception ex)
+            {
+                if (!HandleException(null, context, ex))
+                    throw;
+
                 return;
             }
 
@@ -220,45 +227,46 @@ namespace Cdh.Toolkit.CommandService
 
             string commandName = parts[0];
 
-            ICommand command;
-            using (CommandMapLock.Read())
-                command = CommandMap.GetOrDefault(commandName);
+            ICommand command = null;
+            IList<string> arguments;
 
-            if (command == null)
+            try
             {
-                context.ErrorWriter.WriteLine("No such command: " + commandName);
+                command = ResolveCommand(commandName);
+
+                if (command.MaxArguments < 1 || parts.Length != 2)
+                {
+                    arguments = emptyArgs;
+                }
+                else
+                {
+                    ICommandArgumentParser parser = (command as ICommandArgumentParser) ?? CommandArgumentParser;
+
+                    arguments = parser.ParseArguments(parts[1], command.MaxArguments) ?? emptyArgs;
+                }
+            }
+            catch (Exception ex)
+            {
+                if (!HandleException(command, context, ex))
+                    throw;
+
                 return;
             }
 
-            IList<string> arguments;
-
-            if (command.MaxArguments < 1 || parts.Length != 2)
-            {
-                arguments = emptyArgs;
-            }
-            else
-            {
-                ICommandArgumentParser parser = (command as ICommandArgumentParser) ?? CommandArgumentParser;
-
-                try
-                {
-                    arguments = parser.ParseArguments(parts[1], command.MaxArguments) ?? emptyArgs;
-                }
-                catch (ArgumentsParseException ex)
-                {
-                    context.ErrorWriter.WriteLine(ex.Message);
-                    return;
-                }
-                catch (Exception ex)
-                {
-                    context.ErrorWriter.WriteLine("Exception while parsing arguments for command " + command.Name + ":");
-                    context.ErrorWriter.WriteLine();
-                    context.ErrorWriter.WriteLine(ex.ToString());
-                    return;
-                }
-            }
-
             ExecuteCommand(command, arguments, context);
+        }
+
+        public virtual ICommand ResolveCommand(string commandName)
+        {
+            var commands = Commands.ResolveName(commandName, i => i.Name).ToList();
+
+            if (commands.Count == 1)
+                return commands[0];
+
+            if (commands.Count == 0)
+                throw new CommandNotFoundException(commandName);
+
+            throw new AmbiguousCommandException(commands.Select(i => i.Name));
         }
 
         protected internal void FireTerminatedByUser()
