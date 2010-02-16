@@ -12,7 +12,6 @@ namespace Cdh.Toolkit.CommandService
     public class Service : ICommandContext
     {
         private static readonly IList<string> emptyArgs = new string[0];
-        private static readonly char[] spaceCharArray = new[] { ' ' };
 
         private IDictionary<string, ICommand> CommandMap;
         private IDictionary<string, IConsoleWriter> ConsoleWriterMap;
@@ -220,7 +219,7 @@ namespace Cdh.Toolkit.CommandService
 
         public virtual void ExecuteCommandLine(string commandLine, ICommandContext context)
         {
-            var parts = commandLine.Split(spaceCharArray, 2, StringSplitOptions.RemoveEmptyEntries);
+            var parts = commandLine.Split(Constants.SpaceCharArray, 2, StringSplitOptions.RemoveEmptyEntries);
 
             if (parts.Length == 0)
                 return;

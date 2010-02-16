@@ -13,7 +13,7 @@ namespace Cdh.Toolkit.CommandService
 
         public IList<string> ParseArguments(string arguments, int maxArguments)
         {
-            return ParseArguments(arguments, maxArguments);
+            return arguments.Split(Constants.SpaceCharArray, maxArguments, StringSplitOptions.RemoveEmptyEntries);
         }
     }
 }

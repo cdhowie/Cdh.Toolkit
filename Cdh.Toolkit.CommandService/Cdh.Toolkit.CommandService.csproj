@@ -52,6 +52,7 @@
     <Compile Include="CommandException.cs" />
     <Compile Include="CommandNotFoundException.cs" />
     <Compile Include="Commands\HelpCommand.cs" />
+    <Compile Include="Constants.cs" />
     <Compile Include="DefaultCommandArgumentParser.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="ICommand.cs" />
