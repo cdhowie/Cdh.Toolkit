@@ -16,14 +16,20 @@ namespace Cdh.Toolkit.CommandService
 
         public IList<string> ParseArguments(string arguments, int maxArguments)
         {
-            return DoParse(arguments).ToList();
+            return DoParse(arguments, maxArguments).ToList();
         }
 
-        private IEnumerable<string> DoParse(string arguments)
+        private IEnumerable<string> DoParse(string arguments, int maxArguments)
         {
             StringBuilder argBuilder = new StringBuilder();
             char quote = '\0';
             bool escaped = false;
+
+            bool hadMaxArgumentsSpace = false;
+
+            maxArguments--;
+
+            int argumentsSeen = 0;
 
             foreach (char c in arguments)
             {
@@ -41,6 +47,14 @@ namespace Cdh.Toolkit.CommandService
                             argBuilder.Append(c);
                             break;
 
+                        case '\\':
+                            argBuilder.Append('\\');
+                            break;
+
+                        case ' ':
+                            argBuilder.Append(' ');
+                            break;
+
                         default:
                             argBuilder.Append('\\');
                             argBuilder.Append(c);
@@ -55,23 +69,42 @@ namespace Cdh.Toolkit.CommandService
                     {
                         argBuilder.Append(' ');
                     }
+                    else if (argumentsSeen >= maxArguments)
+                    {
+                        if (!hadMaxArgumentsSpace)
+                        {
+                            argBuilder.Append(' ');
+                            hadMaxArgumentsSpace = true;
+                        }
+                    }
                     else if (argBuilder.Length != 0)
                     {
                         yield return argBuilder.ToString();
                         argBuilder.Length = 0;
+
+                        argumentsSeen++;
                     }
                 }
-                else if (quote != '\0' && c == quote)
+                else
                 {
-                    quote = '\0';
-                }
-                else if (c == '\\')
-                {
-                    escaped = true;
-                }
-                else if (c == '\'' || c == '"')
-                {
-                    quote = c;
+                    hadMaxArgumentsSpace = false;
+
+                    if (quote != '\0' && c == quote)
+                    {
+                        quote = '\0';
+                    }
+                    else if (c == '\\')
+                    {
+                        escaped = true;
+                    }
+                    else if (c == '\'' || c == '"')
+                    {
+                        quote = c;
+                    }
+                    else
+                    {
+                        argBuilder.Append(c);
+                    }
                 }
             }
 
@@ -79,7 +112,12 @@ namespace Cdh.Toolkit.CommandService
                 throw new InvalidDataException("Unable to parse arguments: unterminated " + quote);
 
             if (argBuilder.Length != 0)
+            {
+                if (hadMaxArgumentsSpace)
+                    argBuilder.Length--;
+
                 yield return argBuilder.ToString();
+            }
         }
 
         #endregion
