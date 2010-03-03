@@ -47,11 +47,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ArgumentParserTests.cs" />
+    <Compile Include="Commands\EchoCommand.cs" />
     <Compile Include="CommonArgumentParserTests.cs" />
     <Compile Include="DefaultCommandArgumentParserTests.cs" />
     <Compile Include="Extensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ServiceTests.cs" />
     <Compile Include="ShellCommandArgumentParserTests.cs" />
+    <Compile Include="TestService.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cdh.Toolkit.CommandService\Cdh.Toolkit.CommandService.csproj">
