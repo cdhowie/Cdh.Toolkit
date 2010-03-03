@@ -5,14 +5,16 @@ using System.Text;
 
 namespace Cdh.Toolkit.CommandService.Tests.Commands
 {
-    internal class EchoCommand : ICommand
+    internal class LoggingCommand : ICommand
     {
+        public LoggingCommand(string name)
+        {
+            Name = name;
+        }
+
         #region ICommand Members
 
-        public string Name
-        {
-            get { return "echo"; }
-        }
+        public string Name { get; private set; }
 
         public string Description
         {
@@ -21,12 +23,12 @@ namespace Cdh.Toolkit.CommandService.Tests.Commands
 
         public int MaxArguments
         {
-            get { return int.MaxValue; }
+            get { return 0; }
         }
 
         public void Execute(ICommandContext context, IList<string> arguments)
         {
-            context.NormalWriter.WriteLine(string.Join(" ", arguments.ToArray()));
+            context.GetConsoleWriter("command-log").WriteLine(Name);
         }
 
         #endregion

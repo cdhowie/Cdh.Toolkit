@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="ArgumentParserTests.cs" />
     <Compile Include="Commands\EchoCommand.cs" />
+    <Compile Include="Commands\LoggingCommand.cs" />
     <Compile Include="CommonArgumentParserTests.cs" />
     <Compile Include="DefaultCommandArgumentParserTests.cs" />
     <Compile Include="Extensions.cs" />

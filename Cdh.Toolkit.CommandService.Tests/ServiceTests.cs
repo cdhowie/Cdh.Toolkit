@@ -11,9 +11,28 @@ namespace Cdh.Toolkit.CommandService.Tests
     {
         private TestService service;
 
+        private List<string> commandLog = new List<string>();
+
         public ServiceTests()
         {
             service = new TestService();
+            service.CommandLogWriter.LineWritten += CommandLogWritten;
+        }
+
+        private void CommandLogWritten(object sender, LineWrittenEventArgs args)
+        {
+            commandLog.Add(args.Line);
+        }
+
+        private void AssertCommandLogEquals(params string[] commands)
+        {
+            commandLog.AssertIsEqualTo(commands, "commandLog");
+            commandLog.Clear();
+        }
+
+        private void AssertCommandLogIsEmpty()
+        {
+            Assert.AreEqual(commandLog.Count, 0, "commandLog.Count");
         }
 
         [Test]
@@ -47,6 +66,44 @@ namespace Cdh.Toolkit.CommandService.Tests
             {
                 service.ConsoleLineWritten -= lineReader;
             }
+        }
+
+        private void RunAmbiguousCommandTest(string commandName, params string[] expected)
+        {
+            try
+            {
+                service.ExecuteCommand(commandName);
+
+                Assert.Fail("Expected AmbiguousCommandException");
+            }
+            catch (AmbiguousCommandException ex)
+            {
+                Assert.AreEqual(expected.Length, ex.Commands.Count, "Commands.Count");
+
+                foreach (string name in expected)
+                    Assert.IsTrue(ex.Commands.Contains(name), "commands contains " + name);
+            }
+        }
+
+        [Test]
+        public void AmbiguousCompletionWithExactMatch()
+        {
+            service.ExecuteCommand("ambig-foo");
+            AssertCommandLogEquals("ambig-foo");
+        }
+
+        [Test]
+        public void AmbiguousCompletion()
+        {
+            RunAmbiguousCommandTest("ambig-fo", "ambig-foo", "ambig-foobar");
+            AssertCommandLogIsEmpty();
+        }
+
+        [Test]
+        public void UnambiguousCompletion()
+        {
+            service.ExecuteCommand("ambig-b");
+            AssertCommandLogEquals("ambig-bar");
         }
     }
 }
