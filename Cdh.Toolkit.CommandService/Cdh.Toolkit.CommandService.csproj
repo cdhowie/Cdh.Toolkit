@@ -61,7 +61,6 @@
     <Compile Include="IConsoleWriter.cs" />
     <Compile Include="LineWrittenEventArgs.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Commands\QuitCommand.cs" />
     <Compile Include="Service.cs" />
     <Compile Include="ShellCommandArgumentParser.cs" />
     <Compile Include="TypedContextCommand.cs" />

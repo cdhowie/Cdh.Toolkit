@@ -21,7 +21,6 @@ namespace Cdh.Toolkit.CommandService
         private ReaderWriterLockSlim ConsoleWriterMapLock = new ReaderWriterLockSlim();
 
         public event EventHandler<LineWrittenEventArgs> ConsoleLineWritten;
-        public event EventHandler TerminatedByUser;
 
         public IConsoleWriter NormalWriter { get; private set; }
         public IConsoleWriter ErrorWriter { get; private set; }
@@ -257,11 +256,6 @@ namespace Cdh.Toolkit.CommandService
                 throw new CommandNotFoundException(commandName);
 
             throw new AmbiguousCommandException(commands.Select(i => i.Name));
-        }
-
-        protected internal void FireTerminatedByUser()
-        {
-            TerminatedByUser.Fire(this);
         }
 
         #region ICommandContext Members
