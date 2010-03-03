@@ -248,10 +248,10 @@ namespace Cdh.Toolkit.CommandService
 
         public virtual ICommand ResolveCommand(string commandName)
         {
-            var commands = Commands.ResolveName(commandName, i => i.Name).ToList();
+            var commands = Commands.ResolveName(commandName, i => i.Name);
 
             if (commands.Count == 1)
-                return commands[0];
+                return commands.First();
 
             if (commands.Count == 0)
                 throw new CommandNotFoundException(commandName);
