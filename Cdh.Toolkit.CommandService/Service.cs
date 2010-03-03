@@ -6,6 +6,7 @@ using System.Threading;
 using Cdh.Toolkit.Extensions.Collections;
 using Cdh.Toolkit.Extensions.Events;
 using Cdh.Toolkit.Extensions.ReaderWriterLockSlim;
+using Cdh.Toolkit.Collections;
 
 namespace Cdh.Toolkit.CommandService
 {
@@ -38,25 +39,9 @@ namespace Cdh.Toolkit.CommandService
             }
         }
 
-        public IEnumerable<ICommand> Commands
-        {
-            get
-            {
-                using (CommandMapLock.Read())
-                    foreach (ICommand command in CommandMap.Values)
-                        yield return command;
-            }
-        }
+        public ICollection<ICommand> Commands { get; private set; }
 
-        protected internal IEnumerable<IConsoleWriter> ConsoleWriters
-        {
-            get
-            {
-                using (ConsoleWriterMapLock.Read())
-                    foreach (IConsoleWriter writer in ConsoleWriterMap.Values)
-                        yield return writer;
-            }
-        }
+        protected internal ICollection<IConsoleWriter> ConsoleWriters { get; private set; }
 
         public Service()
         {
@@ -64,6 +49,12 @@ namespace Cdh.Toolkit.CommandService
 
             CommandMap = new Dictionary<string, ICommand>();
             ConsoleWriterMap = new Dictionary<string, IConsoleWriter>();
+
+            Commands = new ReadOnlyCollection<ICommand>(
+                new SynchronizedCollection<ICommand>(CommandMap.Values, EnumerateBehavior.Lock, CommandMapLock));
+
+            ConsoleWriters = new ReadOnlyCollection<IConsoleWriter>(
+                new SynchronizedCollection<IConsoleWriter>(ConsoleWriterMap.Values, EnumerateBehavior.Lock, ConsoleWriterMapLock));
 
             NormalWriter = new BasicConsoleWriter("normal");
             ErrorWriter = new BasicConsoleWriter("error");
@@ -92,7 +83,7 @@ namespace Cdh.Toolkit.CommandService
 
             using (ConsoleWriterMapLock.UpgradeableRead())
             {
-                if (ConsoleWriterMap.ContainsKey(writer.Name) && writer.Name == "normal" || writer.Name == "error")
+                if (ConsoleWriterMap.ContainsKey(writer.Name) && (writer.Name == "normal" || writer.Name == "error"))
                     throw new ArgumentException("Cannot replace the normal or error console writers.", "writer");
 
                 using (ConsoleWriterMapLock.Write())
