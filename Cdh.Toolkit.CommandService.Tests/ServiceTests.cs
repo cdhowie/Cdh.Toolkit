@@ -36,7 +36,7 @@ namespace Cdh.Toolkit.CommandService.Tests
         }
 
         [Test]
-        public void EchoCommand()
+        public void CommandArguments()
         {
             bool passed = false;
             string[] commandArgs = null;
@@ -104,6 +104,13 @@ namespace Cdh.Toolkit.CommandService.Tests
         {
             service.ExecuteCommand("ambig-b");
             AssertCommandLogEquals("ambig-bar");
+        }
+
+        [Test]
+        [ExpectedException(typeof(CommandNotFoundException))]
+        public void NonexistentCommand()
+        {
+            service.ExecuteCommand("oops");
         }
     }
 }
