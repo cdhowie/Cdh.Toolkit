@@ -7,6 +7,11 @@ namespace Cdh.Toolkit.CommandService
 {
     public static class Extensions
     {
+        public static ICollection<string> ResolveName(this IEnumerable<string> e, string name)
+        {
+            return e.ResolveName(name, i => i);
+        }
+
         public static ICollection<T> ResolveName<T>(this IEnumerable<T> e, string name, Func<T, string> nameSelector)
         {
             name = name.ToLowerInvariant();

@@ -173,7 +173,7 @@ namespace Cdh.Toolkit.CommandService
 
             try
             {
-                command = ResolveCommand(commandName);
+                command = ResolveCommandForExecution(commandName);
             }
             catch (Exception ex)
             {
@@ -221,7 +221,7 @@ namespace Cdh.Toolkit.CommandService
 
             try
             {
-                command = ResolveCommand(commandName);
+                command = ResolveCommandForExecution(commandName);
 
                 if (command.MaxArguments < 1 || parts.Length != 2)
                 {
@@ -245,9 +245,15 @@ namespace Cdh.Toolkit.CommandService
             ExecuteCommand(command, arguments, context);
         }
 
-        public virtual ICommand ResolveCommand(string commandName)
+        public virtual ICollection<ICommand> ResolveCommand(string commandName)
         {
-            var commands = Commands.ResolveName(commandName, i => i.Name);
+            using (CommandMapLock.Read())
+                return CommandMap.Values.ResolveName(commandName, i => i.Name);
+        }
+
+        protected ICommand ResolveCommandForExecution(string commandName)
+        {
+            var commands = ResolveCommand(commandName);
 
             if (commands.Count == 1)
                 return commands.First();
