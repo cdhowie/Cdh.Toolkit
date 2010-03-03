@@ -55,6 +55,14 @@
     <Compile Include="Constants.cs" />
     <Compile Include="DefaultCommandArgumentParser.cs" />
     <Compile Include="Extensions.cs" />
+    <Compile Include="Formatting\Alignment.cs" />
+    <Compile Include="Formatting\TextTable.cs" />
+    <Compile Include="Formatting\TextTableCell.cs" />
+    <Compile Include="Formatting\TextTableColumn.cs" />
+    <Compile Include="Formatting\TextTableEnclosingRow.cs" />
+    <Compile Include="Formatting\TextTableRow.cs" />
+    <Compile Include="Formatting\TextTableRowBase.cs" />
+    <Compile Include="Formatting\TextTableRowSeparator.cs" />
     <Compile Include="ICommand.cs" />
     <Compile Include="ICommandArgumentParser.cs" />
     <Compile Include="ICommandContext.cs" />
