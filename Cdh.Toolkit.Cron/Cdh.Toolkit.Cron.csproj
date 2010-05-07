@@ -5,11 +5,11 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>9.0.21022</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{1E02E9A5-46A9-4C3E-99C5-B2C917B9A3D8}</ProjectGuid>
+    <ProjectGuid>{D9527742-B533-4C2D-81A1-12DC0B704EA8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Cdh.Toolkit.Tests</RootNamespace>
-    <AssemblyName>Cdh.Toolkit.Tests</AssemblyName>
+    <RootNamespace>Cdh.Toolkit.Cron</RootNamespace>
+    <AssemblyName>Cdh.Toolkit.Cron</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -31,9 +31,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="nunit.framework, Version=2.5.2.9222, Culture=neutral, PublicKeyToken=96d09a1eb7f44a77, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core">
       <RequiredTargetFramework>3.5</RequiredTargetFramework>
@@ -48,11 +45,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Cron\RangeCollectionTests.cs" />
-    <Compile Include="Cron\RangeCollectionExtensionsTests.cs" />
-    <Compile Include="DistinctEnumerables.cs" />
-    <Compile Include="EnumerableWrapper.cs" />
-    <Compile Include="Json.cs" />
+    <Compile Include="CronService.cs" />
+    <Compile Include="IJob.cs" />
+    <Compile Include="JobExceptionEventArgs.cs" />
+    <Compile Include="RangeCollection.cs" />
+    <Compile Include="RangeCollectionExtensions.cs" />
+    <Compile Include="TraditionalJob.cs" />
+    <Compile Include="JobLockType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -60,20 +59,12 @@
       <Project>{A2E1EDA8-78B8-4717-8B75-0D1A2AC47F15}</Project>
       <Name>Cdh.Toolkit.Collections</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Cdh.Toolkit.Cron\Cdh.Toolkit.Cron.csproj">
-      <Project>{D9527742-B533-4C2D-81A1-12DC0B704EA8}</Project>
-      <Name>Cdh.Toolkit.Cron</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Cdh.Toolkit.Extensions\Cdh.Toolkit.Extensions.csproj">
       <Project>{1F804DDB-FFB0-4D57-B5DD-03389FAC1836}</Project>
       <Name>Cdh.Toolkit.Extensions</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Cdh.Toolkit.Json\Cdh.Toolkit.Json.csproj">
-      <Project>{5F252D4A-2B47-44E7-A8D9-1D0FC21374EA}</Project>
-      <Name>Cdh.Toolkit.Json</Name>
-    </ProjectReference>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
