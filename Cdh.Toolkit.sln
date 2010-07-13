@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cdh.Toolkit.CommandService.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cdh.Toolkit.Cron", "Cdh.Toolkit.Cron\Cdh.Toolkit.Cron.csproj", "{D9527742-B533-4C2D-81A1-12DC0B704EA8}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cdh.Toolkit.Services", "Cdh.Toolkit.Services\Cdh.Toolkit.Services.csproj", "{0E7E5EF5-43A3-4381-B42F-50ABE0A147E5}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{D9527742-B533-4C2D-81A1-12DC0B704EA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D9527742-B533-4C2D-81A1-12DC0B704EA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D9527742-B533-4C2D-81A1-12DC0B704EA8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E7E5EF5-43A3-4381-B42F-50ABE0A147E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E7E5EF5-43A3-4381-B42F-50ABE0A147E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E7E5EF5-43A3-4381-B42F-50ABE0A147E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E7E5EF5-43A3-4381-B42F-50ABE0A147E5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
