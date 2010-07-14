@@ -10,6 +10,10 @@ namespace Cdh.Toolkit.Services
 	{
 		private object sync = new object();
 
+        protected object RunningLock {
+            get { return sync; }
+        }
+
 		protected bool ThreadRunning { get; private set; }
 
 		private Thread thread = null;
