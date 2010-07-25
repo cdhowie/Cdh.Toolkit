@@ -27,7 +27,7 @@ namespace Cdh.Toolkit.Services
 				if (IsRunning || ThreadRunning)
 					return;
 
-				thread = new Thread(ServiceLoop);
+				thread = new Thread(ThreadEntryPoint);
 				IsRunning = true;
 				ThreadRunning = true;
 
@@ -51,7 +51,26 @@ namespace Cdh.Toolkit.Services
 			}
 		}
 
+        private void ThreadEntryPoint()
+        {
+            try { ServiceLoop(); }
+            catch (ThreadInterruptedException) { }
+            finally {
+                lock (sync) {
+                    thread = null;
+                    ThreadRunning = false;
+                    IsRunning = false;
+
+                    Cleanup();
+                }
+            }
+        }
+
 		protected abstract void ServiceLoop();
+
+        protected virtual void Cleanup()
+        {
+        }
 
 		public bool IsRunning { get; private set; }
 
