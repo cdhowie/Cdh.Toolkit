@@ -12,7 +12,12 @@ namespace Cdh.Toolkit.Services
 		private SynchronizedCollection<IService> services =
 			new SynchronizedCollection<IService>(new HashSet<IService>(), EnumerateBehavior.Lock);
 
-		public ServiceManager() { }
+        public ICollection<IService> Services { get; private set; }
+
+		public ServiceManager()
+        {
+            Services = new ReadOnlyCollection<IService>(services);
+        }
 
 		public void RegisterService(IService service)
 		{
