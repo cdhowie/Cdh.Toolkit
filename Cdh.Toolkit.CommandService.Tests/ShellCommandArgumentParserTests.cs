@@ -74,5 +74,17 @@ namespace Cdh.Toolkit.CommandService.Tests
 
             DoTest(expected, input, int.MaxValue);
         }
+
+        [Test]
+        public void BareNestedQuotes()
+        {
+            var expected = new[] {
+                "'", "''", "\"", "\"\""
+            };
+
+            var input = @"""'"" ""''"" '""' '""""'";
+
+            DoTest(expected, input, int.MaxValue);
+        }
     }
 }

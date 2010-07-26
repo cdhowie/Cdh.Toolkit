@@ -101,8 +101,12 @@ namespace Cdh.Toolkit.CommandService
                     }
                     else if (c == '\'' || c == '"')
                     {
-                        quote = c;
-                        sawQuote = true;
+                        if (quote != '\0') {
+                            argBuilder.Append(c);
+                        } else {
+                            quote = c;
+                            sawQuote = true;
+                        }
                     }
                     else
                     {
