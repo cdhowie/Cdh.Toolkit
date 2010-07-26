@@ -36,7 +36,7 @@ namespace Cdh.Toolkit.Tests.Cron
         [ExpectedException(typeof(ArgumentOutOfRangeException))]
         public void BadConstructor()
         {
-            var range = new RangeCollection(1, 0);
+            new RangeCollection(1, 0);
         }
 
         [Test]

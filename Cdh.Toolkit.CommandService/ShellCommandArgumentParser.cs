@@ -24,6 +24,7 @@ namespace Cdh.Toolkit.CommandService
             StringBuilder argBuilder = new StringBuilder();
             char quote = '\0';
             bool escaped = false;
+            bool sawQuote = false;
 
             bool hadMaxArgumentsSpace = false;
 
@@ -77,10 +78,11 @@ namespace Cdh.Toolkit.CommandService
                             hadMaxArgumentsSpace = true;
                         }
                     }
-                    else if (argBuilder.Length != 0)
+                    else if (argBuilder.Length != 0 || sawQuote)
                     {
                         yield return argBuilder.ToString();
                         argBuilder.Length = 0;
+                        sawQuote = false;
 
                         argumentsSeen++;
                     }
@@ -100,6 +102,7 @@ namespace Cdh.Toolkit.CommandService
                     else if (c == '\'' || c == '"')
                     {
                         quote = c;
+                        sawQuote = true;
                     }
                     else
                     {
@@ -111,7 +114,7 @@ namespace Cdh.Toolkit.CommandService
             if (quote != '\0')
                 throw new InvalidDataException("Unable to parse arguments: unterminated " + quote);
 
-            if (argBuilder.Length != 0)
+            if (argBuilder.Length != 0 || sawQuote)
             {
                 if (hadMaxArgumentsSpace)
                     argBuilder.Length--;

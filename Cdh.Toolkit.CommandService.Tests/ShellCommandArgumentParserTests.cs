@@ -62,5 +62,17 @@ namespace Cdh.Toolkit.CommandService.Tests
 
             DoTest(expected, input, int.MaxValue);
         }
+
+        [Test]
+        public void EmptyQuotedParameters()
+        {
+            var expected = new[] {
+                "", "foo", "", "bar baz", ""
+            };
+
+            var input = @"  ''  foo """"   'bar baz' """"";
+
+            DoTest(expected, input, int.MaxValue);
+        }
     }
 }
