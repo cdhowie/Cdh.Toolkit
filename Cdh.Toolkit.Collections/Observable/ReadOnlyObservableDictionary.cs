@@ -29,6 +29,11 @@ namespace Cdh.Toolkit.Collections.Observable
 
         public event EventHandler<ObservableCollectionChangedEventArgs<KeyValuePair<TKey, TValue>>> Changed;
 
+        void IObservableCollection<KeyValuePair<TKey, TValue>>.AddRange(IEnumerable<KeyValuePair<TKey, TValue>> items)
+        {
+            throw new NotSupportedException();
+        }
+
         #endregion
     }
 }

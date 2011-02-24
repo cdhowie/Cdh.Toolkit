@@ -49,6 +49,16 @@ namespace Cdh.Toolkit.Collections.Observable
             }
         }
 
+        public virtual void AddRange(IEnumerable<T> items)
+        {
+            if (items == null)
+                throw new ArgumentNullException("items");
+
+            using (Lock.Write())
+                foreach (var item in items)
+                    Add(item);
+        }
+
         public override void Clear()
         {
             using (Lock.Write())

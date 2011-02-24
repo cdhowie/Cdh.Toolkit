@@ -53,6 +53,16 @@ namespace Cdh.Toolkit.Collections
             }
         }
 
+        public virtual void AddRange(IEnumerable<T> items)
+        {
+            if (items == null)
+                throw new ArgumentNullException("items");
+
+            using (Lock.Write())
+                foreach (var item in items)
+                    Decorated.Add(item);
+        }
+
         #region ICollection<T> Members
 
         void ICollection<T>.Add(T item)

@@ -28,6 +28,11 @@ namespace Cdh.Toolkit.Collections.Observable
 
         public event EventHandler<ObservableCollectionChangedEventArgs<T>> Changed;
 
+        void IObservableCollection<T>.AddRange(IEnumerable<T> items)
+        {
+            throw new NotSupportedException();
+        }
+
         #endregion
     }
 }

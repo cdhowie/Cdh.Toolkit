@@ -41,6 +41,11 @@ namespace Cdh.Toolkit.Collections.Observable
             remove { CollectionChanged -= value; }
         }
 
+        void IObservableCollection<T>.AddRange(IEnumerable<T> items)
+        {
+            throw new NotSupportedException();
+        }
+
         #endregion
     }
 }
