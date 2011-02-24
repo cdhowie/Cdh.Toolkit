@@ -63,10 +63,20 @@ namespace Cdh.Toolkit.Collections.Observable
         {
             using (Lock.Write())
             {
-                foreach (T item in Decorated)
-                    FireRemoved(item);
+                var handler = Changed;
+                if (handler != null)
+                {
+                    var args = Decorated.Select(i => new ObservableCollectionChangedEventArgs<T>(i, ObservableChangeType.Remove)).ToList();
 
-                Decorated.Clear();
+                    Decorated.Clear();
+
+                    foreach (var arg in args)
+                        handler(this, arg);
+                }
+                else
+                {
+                    Decorated.Clear();
+                }
             }
         }
 
