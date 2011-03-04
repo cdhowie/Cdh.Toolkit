@@ -49,7 +49,7 @@ namespace Cdh.Toolkit.Collections.Observable
             }
         }
 
-        public virtual void AddRange(IEnumerable<T> items)
+        public override void AddRange(IEnumerable<T> items)
         {
             if (items == null)
                 throw new ArgumentNullException("items");
