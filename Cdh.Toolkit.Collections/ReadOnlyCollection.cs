@@ -6,17 +6,31 @@ using System.Diagnostics;
 namespace Cdh.Toolkit.Collections
 {
     [DebuggerDisplay("Count = {Count}")]
-    public class ReadOnlyCollection<T> : ICollection<T>
+    public class ReadOnlyCollection<T> : ICollection<T>, ICollection
     {
         protected ICollection<T> Decorated { get; private set; }
+		protected ICollection LegacyDecorated { get; private set; }
 
-        public ReadOnlyCollection(ICollection<T> collection)
-        {
-            if (collection == null)
-                throw new ArgumentNullException("collection");
+		public ReadOnlyCollection(ICollection<T> collection)
+		{
+			if (collection == null)
+				throw new ArgumentNullException("collection");
 
-            Decorated = collection;
-        }
+			Decorated = collection;
+
+			LegacyDecorated = CreateLegacyCollection(collection);
+			if (LegacyDecorated == null)
+				throw new ArgumentException("Unable to convert collection to legacy collection type.", "collection");
+		}
+
+		protected virtual ICollection CreateLegacyCollection(ICollection<T> collection)
+		{
+			var legacy = collection as ICollection;
+			if (legacy != null)
+				return legacy;
+
+			return new CollectionWrapper<T>(collection);
+		}
 
         #region ICollection<T> Members
 
@@ -74,5 +88,24 @@ namespace Cdh.Toolkit.Collections
         }
 
         #endregion
-    }
+
+		#region ICollection Members
+
+		void ICollection.CopyTo(Array array, int index)
+		{
+			LegacyDecorated.CopyTo(array, index);
+		}
+
+		bool ICollection.IsSynchronized
+		{
+			get { return LegacyDecorated.IsSynchronized; }
+		}
+
+		object ICollection.SyncRoot
+		{
+			get { return LegacyDecorated.SyncRoot; }
+		}
+
+		#endregion
+	}
 }
