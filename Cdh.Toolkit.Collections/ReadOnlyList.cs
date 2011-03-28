@@ -22,7 +22,7 @@ namespace Cdh.Toolkit.Collections
 			if (legacy != null)
 				return legacy;
 
-			return base.CreateLegacyCollection(collection);
+            return new ListWrapper<T>((IList<T>)collection);
 		}
 
         #region IList<T> Members
