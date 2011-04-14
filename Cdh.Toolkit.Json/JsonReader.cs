@@ -10,6 +10,8 @@ namespace Cdh.Toolkit.Json
     {
         private TextReader reader;
 
+        public bool Tolerant { get; set; }
+
         public JsonReader(TextReader reader)
         {
             if (reader == null)
@@ -133,7 +135,12 @@ namespace Cdh.Toolkit.Json
                             break;
 
                         default:
-                            throw new InvalidDataException("Unexpected escape sequence: \\" + escaped);
+                            if (!Tolerant)
+                                throw new InvalidDataException("Unexpected escape sequence: \\" + escaped);
+
+                            sb.Append('\\');
+                            sb.Append(escaped);
+                            break;
                     }
                 }
             }
