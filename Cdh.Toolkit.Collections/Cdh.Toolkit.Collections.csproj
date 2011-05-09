@@ -52,6 +52,7 @@
     <Compile Include="CollectionWrapper.cs" />
     <Compile Include="DictionaryWrapper.cs" />
     <Compile Include="EnumerateBehavior.cs" />
+    <Compile Include="CustomEqualityComparer.cs" />
     <Compile Include="ListWrapper.cs" />
     <Compile Include="Observable\IObservableCollection.cs" />
     <Compile Include="Observable\IObservableDictionary.cs" />
