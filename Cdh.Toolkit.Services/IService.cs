@@ -31,11 +31,11 @@ using System.Text;
 
 namespace Cdh.Toolkit.Services
 {
-	public interface IService
-	{
-		void Start();
-		void Stop();
+    public interface IService
+    {
+        void Start();
+        void Stop();
 
-		bool IsRunning { get; }
-	}
+        bool IsRunning { get; }
+    }
 }

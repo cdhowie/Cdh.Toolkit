@@ -32,112 +32,112 @@ using System.Collections;
 
 namespace Cdh.Toolkit.Collections
 {
-	internal class ListWrapper<T> : CollectionWrapper<T>, IList<T>, IList
-	{
-		private IList<T> wrapped;
+    internal class ListWrapper<T> : CollectionWrapper<T>, IList<T>, IList
+    {
+        private IList<T> wrapped;
 
-		public ListWrapper(IList<T> list)
-			: base(list)
-		{
-			wrapped = list;
-		}
+        public ListWrapper(IList<T> list)
+            : base(list)
+        {
+            wrapped = list;
+        }
 
-		#region IList<T> Members
+        #region IList<T> Members
 
-		public int IndexOf(T item)
-		{
-			return wrapped.IndexOf(item);
-		}
+        public int IndexOf(T item)
+        {
+            return wrapped.IndexOf(item);
+        }
 
-		public void Insert(int index, T item)
-		{
-			wrapped.Insert(index, item);
-		}
+        public void Insert(int index, T item)
+        {
+            wrapped.Insert(index, item);
+        }
 
-		public void RemoveAt(int index)
-		{
-			wrapped.RemoveAt(index);
-		}
+        public void RemoveAt(int index)
+        {
+            wrapped.RemoveAt(index);
+        }
 
-		public T this[int index]
-		{
-			get { return wrapped[index]; }
-			set { wrapped[index] = value; }
-		}
+        public T this[int index]
+        {
+            get { return wrapped[index]; }
+            set { wrapped[index] = value; }
+        }
 
-		#endregion
+        #endregion
 
-		#region IList Members
+        #region IList Members
 
-		int IList.Add(object value)
-		{
-			T t;
-			if (!Rocks.ConvertObject(value, out t))
-				return -1;
+        int IList.Add(object value)
+        {
+            T t;
+            if (!Rocks.ConvertObject(value, out t))
+                return -1;
 
-			try {
-				var index = wrapped.Count;
-				Insert(index, t);
+            try {
+                var index = wrapped.Count;
+                Insert(index, t);
 
-				return index;
-			} catch {
-				return -1;
-			}
-		}
+                return index;
+            } catch {
+                return -1;
+            }
+        }
 
-		bool IList.Contains(object value)
-		{
-			T t;
+        bool IList.Contains(object value)
+        {
+            T t;
 
-			return Rocks.ConvertObject(value, out t) ?
-				wrapped.Contains(t) :
-				false;
-		}
+            return Rocks.ConvertObject(value, out t) ?
+                wrapped.Contains(t) :
+                false;
+        }
 
-		int IList.IndexOf(object value)
-		{
-			T t;
+        int IList.IndexOf(object value)
+        {
+            T t;
 
-			return Rocks.ConvertObject(value, out t) ?
-				wrapped.IndexOf(t) :
-				-1;
-		}
+            return Rocks.ConvertObject(value, out t) ?
+                wrapped.IndexOf(t) :
+                -1;
+        }
 
-		void IList.Insert(int index, object value)
-		{
-			T t;
-			if (!Rocks.ConvertObject(value, out t))
-				throw new ArgumentException("Object is not convertible to the element type of this list.", "value");
+        void IList.Insert(int index, object value)
+        {
+            T t;
+            if (!Rocks.ConvertObject(value, out t))
+                throw new ArgumentException("Object is not convertible to the element type of this list.", "value");
 
-			wrapped.Insert(index, t);
-		}
+            wrapped.Insert(index, t);
+        }
 
-		bool IList.IsFixedSize
-		{
-			// This may actually be true but we have no way of knowing.
-			get { return false; }
-		}
+        bool IList.IsFixedSize
+        {
+            // This may actually be true but we have no way of knowing.
+            get { return false; }
+        }
 
-		void IList.Remove(object value)
-		{
-			T t;
-			if (Rocks.ConvertObject(value, out t))
-				wrapped.Remove(t);
-		}
+        void IList.Remove(object value)
+        {
+            T t;
+            if (Rocks.ConvertObject(value, out t))
+                wrapped.Remove(t);
+        }
 
-		object IList.this[int index]
-		{
-			get { return wrapped[index]; }
-			set
-			{
-				T t;
-				if (!Rocks.ConvertObject(value, out t))
-					throw new ArgumentException("Object is not convertible to the element type of this list.", "value");
+        object IList.this[int index]
+        {
+            get { return wrapped[index]; }
+            set
+            {
+                T t;
+                if (!Rocks.ConvertObject(value, out t))
+                    throw new ArgumentException("Object is not convertible to the element type of this list.", "value");
 
-				wrapped[index] = t;
-			}
-		}
+                wrapped[index] = t;
+            }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

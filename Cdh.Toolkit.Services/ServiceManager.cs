@@ -33,37 +33,37 @@ using Cdh.Toolkit.Collections;
 
 namespace Cdh.Toolkit.Services
 {
-	public class ServiceManager
-	{
-		private SynchronizedCollection<IService> services =
-			new SynchronizedCollection<IService>(new HashSet<IService>(), EnumerateBehavior.Lock);
+    public class ServiceManager
+    {
+        private SynchronizedCollection<IService> services =
+            new SynchronizedCollection<IService>(new HashSet<IService>(), EnumerateBehavior.Lock);
 
         public ICollection<IService> Services { get; private set; }
 
-		public ServiceManager()
+        public ServiceManager()
         {
             Services = new ReadOnlyCollection<IService>(services);
         }
 
-		public void RegisterService(IService service)
-		{
-			if (service == null)
-				throw new ArgumentNullException("service");
+        public void RegisterService(IService service)
+        {
+            if (service == null)
+                throw new ArgumentNullException("service");
 
-			services.Add(service);
-		}
+            services.Add(service);
+        }
 
-		public void UnregisterService(IService service)
-		{
-			if (service == null)
-				throw new ArgumentNullException("service");
+        public void UnregisterService(IService service)
+        {
+            if (service == null)
+                throw new ArgumentNullException("service");
 
-			services.Remove(service);
-		}
+            services.Remove(service);
+        }
 
-		public T GetService<T>() where T : IService
-		{
-			return services.OfType<T>().SingleOrDefault();
-		}
-	}
+        public T GetService<T>() where T : IService
+        {
+            return services.OfType<T>().SingleOrDefault();
+        }
+    }
 }

@@ -32,50 +32,50 @@ using System.Threading;
 
 namespace Cdh.Toolkit.Services
 {
-	public abstract class ThreadedService : IService
-	{
-		private object sync = new object();
+    public abstract class ThreadedService : IService
+    {
+        private object sync = new object();
 
         protected object RunningLock {
             get { return sync; }
         }
 
-		protected bool ThreadRunning { get; private set; }
+        protected bool ThreadRunning { get; private set; }
 
-		private Thread thread = null;
+        private Thread thread = null;
 
-		#region IService Members
+        #region IService Members
 
-		public virtual void Start()
-		{
-			lock (sync)
-			{
-				if (IsRunning || ThreadRunning)
-					return;
+        public virtual void Start()
+        {
+            lock (sync)
+            {
+                if (IsRunning || ThreadRunning)
+                    return;
 
-				thread = new Thread(ThreadEntryPoint);
-				IsRunning = true;
-				ThreadRunning = true;
+                thread = new Thread(ThreadEntryPoint);
+                IsRunning = true;
+                ThreadRunning = true;
 
-				thread.Start();
-			}
-		}
+                thread.Start();
+            }
+        }
 
-		public virtual void Stop()
-		{
-			lock (sync)
-			{
-				if (ThreadRunning == false)
-					return;
+        public virtual void Stop()
+        {
+            lock (sync)
+            {
+                if (ThreadRunning == false)
+                    return;
 
-				ThreadRunning = false;
-				thread.Interrupt();
-				thread.Join();
+                ThreadRunning = false;
+                thread.Interrupt();
+                thread.Join();
 
-				thread = null;
-				IsRunning = false;
-			}
-		}
+                thread = null;
+                IsRunning = false;
+            }
+        }
 
         private void ThreadEntryPoint()
         {
@@ -92,14 +92,14 @@ namespace Cdh.Toolkit.Services
             }
         }
 
-		protected abstract void ServiceLoop();
+        protected abstract void ServiceLoop();
 
         protected virtual void Cleanup()
         {
         }
 
-		public bool IsRunning { get; private set; }
+        public bool IsRunning { get; private set; }
 
-		#endregion
-	}
+        #endregion
+    }
 }

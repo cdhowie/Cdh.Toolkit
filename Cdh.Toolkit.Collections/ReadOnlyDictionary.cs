@@ -32,27 +32,27 @@ namespace Cdh.Toolkit.Collections
 {
     public class ReadOnlyDictionary<TKey, TValue> :
         ReadOnlyCollection<KeyValuePair<TKey, TValue>>,
-		IDictionary<TKey, TValue>,
-		IDictionary
+        IDictionary<TKey, TValue>,
+        IDictionary
     {
         protected new IDictionary<TKey, TValue> Decorated { get; private set; }
-		protected new IDictionary LegacyDecorated { get; private set; }
+        protected new IDictionary LegacyDecorated { get; private set; }
 
         public ReadOnlyDictionary(IDictionary<TKey, TValue> dictionary)
             : base(dictionary)
         {
             Decorated = dictionary;
-			LegacyDecorated = (IDictionary)base.LegacyDecorated;
+            LegacyDecorated = (IDictionary)base.LegacyDecorated;
         }
 
-		protected override ICollection CreateLegacyCollection(ICollection<KeyValuePair<TKey, TValue>> collection)
-		{
-			var legacy = collection as IDictionary;
-			if (legacy != null)
-				return legacy;
+        protected override ICollection CreateLegacyCollection(ICollection<KeyValuePair<TKey, TValue>> collection)
+        {
+            var legacy = collection as IDictionary;
+            if (legacy != null)
+                return legacy;
 
-			return new DictionaryWrapper<TKey, TValue>((IDictionary<TKey, TValue>)collection);
-		}
+            return new DictionaryWrapper<TKey, TValue>((IDictionary<TKey, TValue>)collection);
+        }
 
         #region IDictionary<TKey,TValue> Members
 
@@ -94,59 +94,59 @@ namespace Cdh.Toolkit.Collections
 
         #endregion
 
-		#region IDictionary Members
+        #region IDictionary Members
 
-		void IDictionary.Add(object key, object value)
-		{
-			throw new NotSupportedException();
-		}
+        void IDictionary.Add(object key, object value)
+        {
+            throw new NotSupportedException();
+        }
 
-		void IDictionary.Clear()
-		{
-			throw new NotSupportedException();
-		}
+        void IDictionary.Clear()
+        {
+            throw new NotSupportedException();
+        }
 
-		bool IDictionary.Contains(object key)
-		{
-			return LegacyDecorated.Contains(key);
-		}
+        bool IDictionary.Contains(object key)
+        {
+            return LegacyDecorated.Contains(key);
+        }
 
-		IDictionaryEnumerator IDictionary.GetEnumerator()
-		{
-			return LegacyDecorated.GetEnumerator();
-		}
+        IDictionaryEnumerator IDictionary.GetEnumerator()
+        {
+            return LegacyDecorated.GetEnumerator();
+        }
 
-		bool IDictionary.IsFixedSize
-		{
-			get { return LegacyDecorated.IsFixedSize; }
-		}
+        bool IDictionary.IsFixedSize
+        {
+            get { return LegacyDecorated.IsFixedSize; }
+        }
 
-		bool IDictionary.IsReadOnly
-		{
-			get { return true; }
-		}
+        bool IDictionary.IsReadOnly
+        {
+            get { return true; }
+        }
 
-		ICollection IDictionary.Keys
-		{
-			get { return LegacyDecorated.Keys; }
-		}
+        ICollection IDictionary.Keys
+        {
+            get { return LegacyDecorated.Keys; }
+        }
 
-		void IDictionary.Remove(object key)
-		{
-			throw new NotSupportedException();
-		}
+        void IDictionary.Remove(object key)
+        {
+            throw new NotSupportedException();
+        }
 
-		ICollection IDictionary.Values
-		{
-			get { return LegacyDecorated.Values; }
-		}
+        ICollection IDictionary.Values
+        {
+            get { return LegacyDecorated.Values; }
+        }
 
-		object IDictionary.this[object key]
-		{
-			get { return LegacyDecorated[key]; }
-			set { LegacyDecorated[key] = value; }
-		}
+        object IDictionary.this[object key]
+        {
+            get { return LegacyDecorated[key]; }
+            set { LegacyDecorated[key] = value; }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }

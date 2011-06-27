@@ -33,23 +33,23 @@ namespace Cdh.Toolkit.Collections
     public class ReadOnlyList<T> : ReadOnlyCollection<T>, IList<T>, IList
     {
         protected new IList<T> Decorated { get; private set; }
-		protected new IList LegacyDecorated { get; private set; }
+        protected new IList LegacyDecorated { get; private set; }
 
         public ReadOnlyList(IList<T> list)
             : base(list)
         {
             Decorated = list;
-			LegacyDecorated = (IList)base.LegacyDecorated;
+            LegacyDecorated = (IList)base.LegacyDecorated;
         }
 
-		protected override ICollection CreateLegacyCollection(ICollection<T> collection)
-		{
-			var legacy = collection as IList;
-			if (legacy != null)
-				return legacy;
+        protected override ICollection CreateLegacyCollection(ICollection<T> collection)
+        {
+            var legacy = collection as IList;
+            if (legacy != null)
+                return legacy;
 
             return new ListWrapper<T>((IList<T>)collection);
-		}
+        }
 
         #region IList<T> Members
 
@@ -76,54 +76,54 @@ namespace Cdh.Toolkit.Collections
 
         #endregion
 
-		#region IList Members
+        #region IList Members
 
-		int IList.Add(object value)
-		{
-			throw new NotSupportedException();
-		}
+        int IList.Add(object value)
+        {
+            throw new NotSupportedException();
+        }
 
-		void IList.Clear()
-		{
-			throw new NotSupportedException();
-		}
+        void IList.Clear()
+        {
+            throw new NotSupportedException();
+        }
 
-		bool IList.Contains(object value)
-		{
-			return LegacyDecorated.Contains(value);
-		}
+        bool IList.Contains(object value)
+        {
+            return LegacyDecorated.Contains(value);
+        }
 
-		int IList.IndexOf(object value)
-		{
-			return LegacyDecorated.IndexOf(value);
-		}
+        int IList.IndexOf(object value)
+        {
+            return LegacyDecorated.IndexOf(value);
+        }
 
-		void IList.Insert(int index, object value)
-		{
-			throw new NotSupportedException();
-		}
+        void IList.Insert(int index, object value)
+        {
+            throw new NotSupportedException();
+        }
 
-		bool IList.IsFixedSize
-		{
-			get { return LegacyDecorated.IsFixedSize; }
-		}
+        bool IList.IsFixedSize
+        {
+            get { return LegacyDecorated.IsFixedSize; }
+        }
 
-		void IList.Remove(object value)
-		{
-			throw new NotSupportedException();
-		}
+        void IList.Remove(object value)
+        {
+            throw new NotSupportedException();
+        }
 
-		void IList.RemoveAt(int index)
-		{
-			throw new NotSupportedException();
-		}
+        void IList.RemoveAt(int index)
+        {
+            throw new NotSupportedException();
+        }
 
-		object IList.this[int index]
-		{
-			get { return LegacyDecorated[index]; }
-			set { LegacyDecorated[index] = value; }
-		}
+        object IList.this[int index]
+        {
+            get { return LegacyDecorated[index]; }
+            set { LegacyDecorated[index] = value; }
+        }
 
-		#endregion
-	}
+        #endregion
+    }
 }
