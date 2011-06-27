@@ -2,7 +2,7 @@
 // WriteGitCommit.cs
 //  
 // Author:
-//       Chris Howie <cdhowie@gmail.com>
+//       Chris Howie <me@chrishowie.com>
 // 
 // Copyright (c) 2010 Chris Howie
 // 
@@ -23,6 +23,7 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+
 using System;
 using Microsoft.Build.Utilities;
 using Microsoft.Build.Framework;
