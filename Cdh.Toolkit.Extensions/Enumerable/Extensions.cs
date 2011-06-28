@@ -26,6 +26,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace Cdh.Toolkit.Extensions.Enumerable
 {
@@ -88,6 +89,24 @@ namespace Cdh.Toolkit.Extensions.Enumerable
                     yield return e.Current;
                 }
             }
+        }
+
+        public static string Join(this IEnumerable<string> self)
+        {
+            Check.ArgumentIsNotNull(self, "self");
+
+            var sb = new StringBuilder();
+
+            foreach (var str in self)
+                if (str != null)
+                    sb.Append(str);
+
+            return sb.ToString();
+        }
+
+        public static string Join(this IEnumerable<string> self, string delimiter)
+        {
+            return Join(Delimit(self, delimiter));
         }
     }
 }
