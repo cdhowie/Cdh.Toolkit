@@ -52,5 +52,22 @@ namespace Cdh.Toolkit.Extensions.Enumerable
             foreach (T item in e)
                 list[i++] = item;
         }
+
+        public static IEnumerable<T> Delimit<T>(this IEnumerable<T> self, T delimiter)
+        {
+            using (var e = self.GetEnumerator())
+            {
+                if (!e.MoveNext())
+                    yield break;
+
+                yield return e.Current;
+
+                while (e.MoveNext())
+                {
+                    yield return delimiter;
+                    yield return e.Current;
+                }
+            }
+        }
     }
 }
