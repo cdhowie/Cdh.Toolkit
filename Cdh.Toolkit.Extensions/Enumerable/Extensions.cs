@@ -31,29 +31,49 @@ namespace Cdh.Toolkit.Extensions.Enumerable
 {
     public static class Extensions
     {
-        public static IEnumerable<T> NotNull<T>(this IEnumerable<T?> e)
+        public static IEnumerable<T> NotNull<T>(this IEnumerable<T?> self)
             where T : struct
         {
-            foreach (T? i in e)
+            Check.ArgumentIsNotNull(self, "self");
+
+            return CreateNotNullEnumerable<T>(self);
+        }
+
+        private static IEnumerable<T> CreateNotNullEnumerable<T>(this IEnumerable<T?> self)
+            where T : struct
+        {
+            foreach (T? i in self)
                 if (i.HasValue)
                     yield return i.Value;
         }
 
-        public static void Walk<T>(this IEnumerable<T> e)
+        public static void Walk<T>(this IEnumerable<T> self)
         {
-            using (IEnumerator<T> walker = e.GetEnumerator())
+            Check.ArgumentIsNotNull(self, "self");
+
+            using (IEnumerator<T> walker = self.GetEnumerator())
                 while (walker.MoveNext()) ;
         }
 
-        public static void CopyInto<T>(this IEnumerable<T> e, IList<T> list)
+        public static void CopyInto<T>(this IEnumerable<T> self, IList<T> list)
         {
+            Check.ArgumentIsNotNull(self, "self");
+            Check.ArgumentIsNotNull(list, "list");
+
             int i = 0;
 
-            foreach (T item in e)
+            foreach (T item in self)
                 list[i++] = item;
         }
 
         public static IEnumerable<T> Delimit<T>(this IEnumerable<T> self, T delimiter)
+        {
+            Check.ArgumentIsNotNull(self, "self");
+
+            return CreateDelimitEnumerable<T>(self, delimiter);
+        }
+
+        private static IEnumerable<T> CreateDelimitEnumerable<T>(this IEnumerable<T> self, T delimiter)
         {
             using (var e = self.GetEnumerator())
             {

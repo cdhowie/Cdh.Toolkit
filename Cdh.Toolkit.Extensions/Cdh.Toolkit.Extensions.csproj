@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Check.cs" />
     <Compile Include="Collections\Extensions.cs" />
     <Compile Include="ComponentModel\Extensions.cs" />
     <Compile Include="Enumerable\Extensions.cs" />
