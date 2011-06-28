@@ -33,7 +33,7 @@ using System.Collections;
 
 namespace Cdh.Toolkit.Json
 {
-    public class JsonWriter
+    public class JsonWriter : IDisposable
     {
         private TextWriter writer;
         private int nesting = 0;
@@ -286,5 +286,28 @@ namespace Cdh.Toolkit.Json
         }
 
         #endregion
+
+        ~JsonWriter()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            GC.SuppressFinalize(this);
+
+            if (disposing)
+            {
+                if (writer != null)
+                    writer.Dispose();
+            }
+
+            writer = null;
+        }
     }
 }

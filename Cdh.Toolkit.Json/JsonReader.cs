@@ -32,7 +32,7 @@ using System.IO;
 
 namespace Cdh.Toolkit.Json
 {
-    public class JsonReader
+    public class JsonReader : IDisposable
     {
         private TextReader reader;
 
@@ -324,6 +324,29 @@ namespace Cdh.Toolkit.Json
                     default: throw new InvalidDataException("Malformed JSON: Expected , or }");
                 }
             }
+        }
+
+        ~JsonReader()
+        {
+            Dispose(false);
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            GC.SuppressFinalize(this);
+
+            if (disposing)
+            {
+                if (reader != null)
+                    reader.Dispose();
+            }
+
+            reader = null;
         }
     }
 }
