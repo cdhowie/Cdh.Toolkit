@@ -74,8 +74,8 @@ namespace Cdh.Toolkit.Collections
             // lock from being acquired prior to throwing the inevitable
             // exception.
 
-            Keys = CreateSynchronizedReadOnlyCollection(Keys);
-            Values = CreateSynchronizedReadOnlyCollection(Values);
+            Keys = CreateSynchronizedReadOnlyCollection(Decorated.Keys);
+            Values = CreateSynchronizedReadOnlyCollection(Decorated.Values);
         }
 
         private ICollection<T> CreateSynchronizedReadOnlyCollection<T>(ICollection<T> collection)
