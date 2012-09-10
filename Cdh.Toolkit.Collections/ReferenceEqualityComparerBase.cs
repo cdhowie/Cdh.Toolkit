@@ -37,6 +37,44 @@ namespace Cdh.Toolkit.Collections
         }
 
         protected abstract int ComputeHashCode(T obj);
+
+        #region Singleton implementation
+
+        public static ReferenceEqualityComparerBase<T> Create(
+            Func<T, T, bool> equalityFunction,
+            Func<T, int> hashCodeFunction)
+        {
+            return new LambdaReferenceEqualityComparer(equalityFunction, hashCodeFunction);
+        }
+
+        private class LambdaReferenceEqualityComparer : ReferenceEqualityComparerBase<T>
+        {
+            private Func<T, T, bool> equalityFunction;
+            private Func<T, int> hashCodeFunction;
+
+            public LambdaReferenceEqualityComparer(Func<T, T, bool> equalityFunction, Func<T, int> hashCodeFunction)
+            {
+                if (equalityFunction == null)
+                    throw new ArgumentNullException("equalityFunction");
+
+                if (hashCodeFunction == null)
+                    throw new ArgumentNullException("hashCodeFunction");
+
+                this.equalityFunction = equalityFunction;
+                this.hashCodeFunction = hashCodeFunction;
+            }
+
+            protected override bool EqualityTest(T x, T y)
+            {
+                return equalityFunction(x, y);
+            }
+
+            protected override int ComputeHashCode(T obj)
+            {
+                return hashCodeFunction(obj);
+            }
+        }
+
+        #endregion
     }
 }
-
