@@ -47,11 +47,32 @@ namespace Cdh.Toolkit.Collections
 
         public bool Equals(TObject x, TObject y)
         {
+            if (!typeof(TObject).IsValueType) {
+                // Reference semantics.
+                if (object.ReferenceEquals(x, y)) {
+                    return true;
+                }
+
+                if (object.ReferenceEquals(x, default(TObject))) {
+                    return object.ReferenceEquals(y, default(TObject));
+                }
+
+                if (object.ReferenceEquals(y, default(TObject))) {
+                    return false;
+                }
+            }
+
             return EqualityComparer<TKey>.Default.Equals(keySelector(x), keySelector(y));
         }
 
         public int GetHashCode(TObject obj)
         {
+            if (!typeof(TObject).IsValueType) {
+                if (object.ReferenceEquals(obj, default(TObject))) {
+                    throw new ArgumentNullException("obj");
+                }
+            }
+
             return EqualityComparer<TKey>.Default.GetHashCode(keySelector(obj));
         }
 
