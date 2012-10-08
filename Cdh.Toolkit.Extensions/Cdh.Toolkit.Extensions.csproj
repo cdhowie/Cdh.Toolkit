@@ -61,6 +61,8 @@
     <Compile Include="Xml.Linq\Common.cs" />
     <Compile Include="Xml.Linq\XAttributeExtensions.cs" />
     <Compile Include="Xml.Linq\XElementExtensions.cs" />
+    <Compile Include="Delegates\Extensions.cs" />
+    <Compile Include="Delegates\Defer.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -70,4 +72,7 @@
   <Target Name="AfterBuild">
   </Target>
   -->
+  <ItemGroup>
+    <Folder Include="Delegates\" />
+  </ItemGroup>
 </Project>
