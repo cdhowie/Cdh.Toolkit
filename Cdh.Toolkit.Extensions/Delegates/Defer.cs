@@ -49,6 +49,35 @@ namespace Cdh.Toolkit.Extensions.Delegates
                 this.action = action;
             }
 
+            private void Execute()
+            {
+                try {
+                    action();
+                } catch (Exception ex) {
+                    var handled = false;
+                    
+                    foreach (var handler in exceptionHandlers) {
+                        handled = handler(ex);
+                        if (handled) {
+                            break;
+                        }
+                    }
+                    
+                    if (!handled) {
+                        throw;
+                    }
+                }
+            }
+
+            public void Immediately()
+            {
+                Action processor = Execute;
+
+                AsyncCallback callback = result => processor.EndInvoke(result);
+
+                processor.BeginInvoke(result => processor.EndInvoke(result), null);
+            }
+
             public void For(TimeSpan timeSpan)
             {
                 if (timeSpan.CompareTo(TimeSpan.Zero) <= 0) {
@@ -57,28 +86,10 @@ namespace Cdh.Toolkit.Extensions.Delegates
 
                 Action processor = delegate {
                     Thread.Sleep(timeSpan);
-
-                    try {
-                        action();
-                    } catch (Exception ex) {
-                        var handled = false;
-
-                        foreach (var handler in exceptionHandlers) {
-                            handled = handler(ex);
-                            if (handled) {
-                                break;
-                            }
-                        }
-
-                        if (!handled) {
-                            throw;
-                        }
-                    }
+                    Execute();
                 };
 
-                AsyncCallback callback = result => processor.EndInvoke(result);
-
-                processor.BeginInvoke(callback, null);
+                processor.BeginInvoke(result => processor.EndInvoke(result), null);
             }
 
             public void Until(DateTime dateTime)
