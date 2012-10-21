@@ -73,8 +73,6 @@ namespace Cdh.Toolkit.Extensions.Delegates
             {
                 Action processor = Execute;
 
-                AsyncCallback callback = result => processor.EndInvoke(result);
-
                 processor.BeginInvoke(result => processor.EndInvoke(result), null);
             }
 
