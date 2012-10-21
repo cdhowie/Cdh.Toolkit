@@ -33,6 +33,8 @@ namespace Cdh.Toolkit.Extensions.Collections
     {
         public static TValue GetOrDefault<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key)
         {
+            Check.ArgumentIsNotNull(dict, "dict");
+
             TValue value;
             dict.TryGetValue(key, out value);
             return value;
@@ -40,6 +42,8 @@ namespace Cdh.Toolkit.Extensions.Collections
 
         public static TValue GetOrValue<TKey, TValue>(this IDictionary<TKey, TValue> dict, TKey key, TValue fallback)
         {
+            Check.ArgumentIsNotNull(dict, "dict");
+
             TValue value;
 
             return dict.TryGetValue(key, out value) ? value : fallback;
