@@ -28,6 +28,7 @@ using System;
 using Microsoft.Build.Utilities;
 using Microsoft.Build.Framework;
 using System.IO;
+using System.Text.RegularExpressions;
 
 namespace Cdh.Toolkit.BuildTasks
 {
@@ -43,18 +44,56 @@ namespace Cdh.Toolkit.BuildTasks
             OutputFile = "git-commit";
         }
 
+        private static readonly Regex validationRegex = new Regex(@"^[0-9a-f]{40}$");
+
         public override bool Execute()
         {
             using (var outputFile = File.CreateText(OutputFile)) {
-                string head;
+                string headRef;
                 using (var headFile = File.OpenText(Path.Combine(Repository, "HEAD")))
-                    head = headFile.ReadLine();
+                    headRef = headFile.ReadLine();
    
-                if (head.StartsWith("ref: ")) {
-                    string refPath = head.Substring(5).Replace('/', Path.DirectorySeparatorChar);
+                string head;
 
-                    using (var refFile = File.OpenText(Path.Combine(Repository, refPath)))
-                        head = refFile.ReadLine();
+                if (headRef.StartsWith("ref: ")) {
+                    string refPath = headRef.Substring(5);
+                    string refFilePath = refPath.Replace('/', Path.DirectorySeparatorChar);
+
+                    try {
+                        using (var refFile = File.OpenText(Path.Combine(Repository, refFilePath)))
+                            head = refFile.ReadLine();
+                    } catch (FileNotFoundException) {
+                        // Maybe the ref is packed?
+
+                        using (var packedRef = File.OpenText(Path.Combine(Repository, "packed-refs"))) {
+                            string line;
+
+                            head = null;
+
+                            while ((line = packedRef.ReadLine()) != null) {
+                                if (line.StartsWith("#")) {
+                                    continue;
+                                }
+
+                                var parts = line.Split(new[] { ' ' }, 2);
+
+                                if (parts.Length == 2 && refPath.Equals(parts[1])) {
+                                    head = parts[0];
+                                    break;
+                                }
+                            }
+
+                            if (head == null) {
+                                throw new ApplicationException(string.Format("Unable to find ref {0} in packed refs.", headRef));
+                            }
+                        }
+                    }
+                } else {
+                    head = headRef;
+                }
+
+                if (!validationRegex.IsMatch(head)) {
+                    throw new ApplicationException(string.Format("Located commit ID \"{0}\" is not valid.", head));
                 }
 
                 outputFile.Write(head);
