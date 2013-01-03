@@ -44,6 +44,8 @@ namespace Cdh.Toolkit.Services
 
         private Thread thread = null;
 
+        protected abstract bool IsBackgroundService { get; }
+
         #region IService Members
 
         public virtual void Start()
@@ -54,6 +56,7 @@ namespace Cdh.Toolkit.Services
                     return;
 
                 thread = new Thread(ThreadEntryPoint);
+                thread.IsBackground = IsBackgroundService;
                 IsRunning = true;
                 ThreadRunning = true;
 
