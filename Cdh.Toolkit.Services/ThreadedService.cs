@@ -63,18 +63,25 @@ namespace Cdh.Toolkit.Services
 
         public virtual void Stop()
         {
+            Thread threadCopy;
+
             lock (sync)
             {
                 if (ThreadRunning == false)
                     return;
 
-                ThreadRunning = false;
-                thread.Interrupt();
-                thread.Join();
+                threadCopy = thread;
 
-                thread = null;
-                IsRunning = false;
+                ThreadRunning = false;
+                InterruptThread();
             }
+
+            threadCopy.Join();
+        }
+
+        protected virtual void InterruptThread()
+        {
+            thread.Interrupt();
         }
 
         private void ThreadEntryPoint()
