@@ -73,13 +73,13 @@ namespace Cdh.Toolkit.Services
                 threadCopy = thread;
 
                 ThreadRunning = false;
-                InterruptThread();
+                StopRequested();
             }
 
             threadCopy.Join();
         }
 
-        protected virtual void InterruptThread()
+        protected virtual void StopRequested()
         {
             thread.Interrupt();
         }
