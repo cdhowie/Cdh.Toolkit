@@ -53,6 +53,12 @@ namespace Cdh.Toolkit.Services
             services.Add(service);
         }
 
+        public void RegisterAndStartService(IService service)
+        {
+            RegisterService(service);
+            service.Start();
+        }
+
         public void UnregisterService(IService service)
         {
             if (service == null)
@@ -64,6 +70,18 @@ namespace Cdh.Toolkit.Services
         public T GetService<T>() where T : IService
         {
             return services.OfType<T>().SingleOrDefault();
+        }
+
+        public T RequireService<T>() where T : IService
+        {
+            var service = GetService<T>();
+
+            if (service == null) {
+                throw new InvalidOperationException(string.Format(
+                    "Requested service type {0} not registered.", typeof(T).FullName));
+            }
+
+            return service;
         }
     }
 }
