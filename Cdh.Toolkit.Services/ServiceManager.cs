@@ -78,7 +78,7 @@ namespace Cdh.Toolkit.Services
 
             if (service == null) {
                 throw new InvalidOperationException(string.Format(
-                    "Requested service type {0} not registered.", typeof(T).FullName));
+                    "Required service type {0} not registered.", typeof(T).FullName));
             }
 
             return service;
