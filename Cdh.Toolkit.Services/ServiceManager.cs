@@ -30,58 +30,80 @@ using System.Linq;
 using System.Text;
 
 using Cdh.Toolkit.Collections;
+using System.Threading;
+using Cdh.Toolkit.Extensions.ReaderWriterLockSlim;
 
 namespace Cdh.Toolkit.Services
 {
-    public class ServiceManager
+    public class ServiceManager : IServiceManager
     {
-        private SynchronizedCollection<IService> services =
-            new SynchronizedCollection<IService>(new HashSet<IService>(), EnumerateBehavior.Lock);
+        protected ReaderWriterLockSlim Lock { get; private set; }
+
+        protected ICollection<IService> ServiceCollection { get; private set; }
 
         public ICollection<IService> Services { get; private set; }
 
+        private Dictionary<Type, IService> serviceCache = new Dictionary<Type, IService>();
+
         public ServiceManager()
         {
-            Services = new ReadOnlyCollection<IService>(services);
+            Lock = new ReaderWriterLockSlim();
+
+            ServiceCollection = new HashSet<IService>();
+
+            Services = new ReadOnlyCollection<IService>(new SynchronizedCollection<IService>(ServiceCollection, EnumerateBehavior.Lock, Lock));
         }
 
-        public void RegisterService(IService service)
+        public virtual void RegisterService(IService service)
         {
             if (service == null)
                 throw new ArgumentNullException("service");
 
-            services.Add(service);
-        }
+            using (Lock.Write()) {
+                ServiceCollection.Add(service);
 
-        public void RegisterAndStartService(IService service)
-        {
-            RegisterService(service);
-            service.Start();
-        }
-
-        public void UnregisterService(IService service)
-        {
-            if (service == null)
-                throw new ArgumentNullException("service");
-
-            services.Remove(service);
-        }
-
-        public T GetService<T>() where T : IService
-        {
-            return services.OfType<T>().SingleOrDefault();
-        }
-
-        public T RequireService<T>() where T : IService
-        {
-            var service = GetService<T>();
-
-            if (service == null) {
-                throw new InvalidOperationException(string.Format(
-                    "Required service type {0} not registered.", typeof(T).FullName));
+                PurgeCache();
             }
+        }
 
-            return service;
+        public virtual void UnregisterService(IService service)
+        {
+            if (service == null)
+                throw new ArgumentNullException("service");
+
+            using (Lock.Write()) {
+                ServiceCollection.Remove(service);
+
+                PurgeCache();
+            }
+        }
+
+        protected void PurgeCache()
+        {
+            serviceCache.Clear();
+        }
+
+        public virtual IEnumerable<T> GetServices<T>() where T : IService
+        {
+            using (Lock.Read()) {
+                return ServiceCollection.OfType<T>().ToList();
+            }
+        }
+
+        public virtual T GetService<T>() where T : IService
+        {
+            using (Lock.Read()) {
+                IService cachedService;
+                if (serviceCache.TryGetValue(typeof(T), out cachedService)) {
+                    return (T)cachedService;
+                }
+
+                var service = GetServices<T>().SingleOrDefault();
+
+                serviceCache[typeof(T)] = service;
+
+                return service;
+            }
         }
     }
 }
