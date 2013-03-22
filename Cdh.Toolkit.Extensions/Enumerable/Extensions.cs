@@ -55,16 +55,19 @@ namespace Cdh.Toolkit.Extensions.Enumerable
             using (IEnumerator<T> walker = self.GetEnumerator())
                 while (walker.MoveNext()) ;
         }
-
+        
         public static void CopyInto<T>(this IEnumerable<T> self, IList<T> list)
+        {
+            CopyInto<T>(self, list, 0);
+        }
+
+        public static void CopyInto<T>(this IEnumerable<T> self, IList<T> list, int index)
         {
             Check.ArgumentIsNotNull(self, "self");
             Check.ArgumentIsNotNull(list, "list");
 
-            int i = 0;
-
             foreach (T item in self)
-                list[i++] = item;
+                list[index++] = item;
         }
 
         public static IEnumerable<T> Delimit<T>(this IEnumerable<T> self, T delimiter)
