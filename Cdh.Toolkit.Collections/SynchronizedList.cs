@@ -70,6 +70,8 @@ namespace Cdh.Toolkit.Collections
 
         public virtual void Insert(int index, T item)
         {
+            ValidateItem(item);
+
             using (Lock.Write())
                 Decorated.Insert(index, item);
         }
@@ -89,6 +91,8 @@ namespace Cdh.Toolkit.Collections
             }
             set
             {
+                ValidateItem(value);
+
                 using (Lock.Write())
                     Decorated[index] = value;
             }
