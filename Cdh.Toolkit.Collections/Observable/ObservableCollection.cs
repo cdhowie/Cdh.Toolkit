@@ -43,14 +43,14 @@ namespace Cdh.Toolkit.Collections.Observable
         public ObservableCollection(ICollection<T> collection, EnumerateBehavior behavior)
             : base(collection, behavior) { }
 
-        protected virtual void FireAdded(T item)
+        protected virtual void OnAdded(T item)
         {
             var handler = Changed;
             if (handler != null)
                 handler(this, new ObservableCollectionChangedEventArgs<T>(item, ObservableChangeType.Add));
         }
 
-        protected virtual void FireRemoved(T item)
+        protected virtual void OnRemoved(T item)
         {
             var handler = Changed;
             if (handler != null)
@@ -67,7 +67,7 @@ namespace Cdh.Toolkit.Collections.Observable
 
                 if (originalCount != Decorated.Count)
                 {
-                    FireAdded(item);
+                    OnAdded(item);
                     return true;
                 }
 
@@ -113,7 +113,7 @@ namespace Cdh.Toolkit.Collections.Observable
                 bool success;
 
                 if (success = Decorated.Remove(item))
-                    FireRemoved(item);
+                    OnRemoved(item);
 
                 return success;
             }

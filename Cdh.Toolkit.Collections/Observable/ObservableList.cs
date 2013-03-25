@@ -26,7 +26,15 @@ namespace Cdh.Toolkit.Collections.Observable
             remove { CollectionChanged -= value; }
         }
 
-        private void FireChanged(T item, ObservableChangeType changeType, int index)
+        protected void FireChanged(T item, T replacedItem, int index)
+        {
+            var args = new ObservableListChangedEventArgs<T>(item, replacedItem, index);
+
+            Changed.Fire(this, args);
+            CollectionChanged.Fire(this, args);
+        }
+
+        protected void FireChanged(T item, ObservableChangeType changeType, int index)
         {
             var args = new ObservableListChangedEventArgs<T>(item, changeType, index);
 
@@ -34,22 +42,19 @@ namespace Cdh.Toolkit.Collections.Observable
             CollectionChanged.Fire(this, args);
         }
 
-        protected virtual void FireInserted(T item, int index)
+        protected virtual void OnInserted(T item, int index)
         {
             FireChanged(item, ObservableChangeType.Add, index);
         }
 
-        protected virtual void FireRemoved(T item, int index)
+        protected virtual void OnRemoved(T item, int index)
         {
             FireChanged(item, ObservableChangeType.Remove, index);
         }
 
-        protected virtual void FireReplaced(T item, T replacedItem, int index)
+        protected virtual void OnReplaced(T item, T replacedItem, int index)
         {
-            var args = new ObservableListChangedEventArgs<T>(item, replacedItem, index);
-
-            Changed.Fire(this, args);
-            CollectionChanged.Fire(this, args);
+            FireChanged(item, replacedItem, index);
         }
 
         public override bool Add(T item)
@@ -58,7 +63,7 @@ namespace Cdh.Toolkit.Collections.Observable
                 var success = base.Add(item);
 
                 if (success) {
-                    FireInserted(item, Decorated.Count - 1);
+                    OnInserted(item, Decorated.Count - 1);
                 }
 
                 return success;
@@ -98,7 +103,7 @@ namespace Cdh.Toolkit.Collections.Observable
             using (Lock.Write()) {
                 Decorated.Insert(index, item);
 
-                FireInserted(item, index);
+                OnInserted(item, index);
             }
         }
 
@@ -113,7 +118,7 @@ namespace Cdh.Toolkit.Collections.Observable
 
                 Decorated.RemoveAt(index);
 
-                FireRemoved(item, index);
+                OnRemoved(item, index);
 
                 return true;
             }
@@ -126,7 +131,7 @@ namespace Cdh.Toolkit.Collections.Observable
 
                 Decorated.RemoveAt(index);
 
-                FireRemoved(item, index);
+                OnRemoved(item, index);
             }
         }
 
@@ -140,7 +145,7 @@ namespace Cdh.Toolkit.Collections.Observable
 
                     Decorated[index] = value;
 
-                    FireReplaced(value, oldItem, index);
+                    OnReplaced(value, oldItem, index);
                 }
             }
         }
