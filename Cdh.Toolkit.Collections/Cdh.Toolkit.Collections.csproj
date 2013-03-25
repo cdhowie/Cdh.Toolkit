@@ -60,6 +60,7 @@
     <Compile Include="Observable\ObservableCollection.cs" />
     <Compile Include="Observable\ObservableEvents.cs" />
     <Compile Include="Observable\ObservableHashSet.cs" />
+    <Compile Include="Observable\ObservableList.cs" />
     <Compile Include="Observable\ReadOnlyObservableCollection.cs" />
     <Compile Include="Observable\ReadOnlyObservableDictionary.cs" />
     <Compile Include="Observable\ReadOnlyObservableList.cs" />

@@ -31,7 +31,8 @@ namespace Cdh.Toolkit.Collections.Observable
     public enum ObservableChangeType
     {
         Add,
-        Remove
+        Remove,
+        Replace
     }
 
     public class ObservableCollectionChangedEventArgs<T> : EventArgs
@@ -49,11 +50,19 @@ namespace Cdh.Toolkit.Collections.Observable
     public class ObservableListChangedEventArgs<T> : ObservableCollectionChangedEventArgs<T>
     {
         public int Index { get; private set; }
+        public T ReplacedItem { get; private set; }
 
         public ObservableListChangedEventArgs(T item, ObservableChangeType changeType, int index)
             : base(item, changeType)
         {
             Index = index;
+        }
+
+        public ObservableListChangedEventArgs(T item, T replacedItem, int index)
+            : base(item, ObservableChangeType.Replace)
+        {
+            Index = index;
+            ReplacedItem = replacedItem;
         }
     }
 }
