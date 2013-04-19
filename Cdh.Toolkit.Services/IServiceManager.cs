@@ -1,6 +1,7 @@
 using System;
 using Cdh.Toolkit.Extensions;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Cdh.Toolkit.Services
 {
@@ -36,6 +37,20 @@ namespace Cdh.Toolkit.Services
 
             serviceManager.RegisterService(service);
             service.Start();
+        }
+
+        public static void StopAndUnregisterServices<T>(this IServiceManager serviceManager)
+            where T : IService
+        {
+            Check.ArgumentIsNotNull(serviceManager, "serviceManager");
+
+            var services = serviceManager.GetServices<T>().ToList();
+
+            foreach (var service in services) {
+                service.Stop();
+
+                serviceManager.UnregisterService(service);
+            }
         }
     }
 }
