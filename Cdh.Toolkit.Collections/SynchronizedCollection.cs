@@ -63,8 +63,12 @@ namespace Cdh.Toolkit.Collections
         {
         }
 
+        protected virtual void ValidateItem(T item) { }
+
         public virtual bool Add(T item)
         {
+            ValidateItem(item);
+
             using (Lock.Write())
             {
                 // This is kind of a hack, but it ensures that with e.g.
@@ -83,6 +87,8 @@ namespace Cdh.Toolkit.Collections
         {
             if (items == null)
                 throw new ArgumentNullException("items");
+
+            foreach (var item in items) { ValidateItem(item); }
 
             using (Lock.Write())
                 foreach (var item in items)

@@ -68,7 +68,7 @@ namespace Cdh.Toolkit.Collections.Observable
                 bool success;
 
                 if (success = Decorated.Add(item))
-                    FireAdded(item);
+                    OnAdded(item);
 
                 return success;
             }
@@ -104,7 +104,7 @@ namespace Cdh.Toolkit.Collections.Observable
             using (Lock.Write())
                 foreach (T item in other)
                     if (Decorated.Remove(item))
-                        FireRemoved(item);
+                        OnRemoved(item);
         }
 
         public virtual void IntersectWith(IEnumerable<T> other)
@@ -120,14 +120,14 @@ namespace Cdh.Toolkit.Collections.Observable
                     if (!other.Contains(item))
                     {
                         Decorated.Remove(item);
-                        FireRemoved(item);
+                        OnRemoved(item);
                     }
 
                 foreach (T item in other)
                     if (!Decorated.Contains(item))
                     {
                         Decorated.Remove(item);
-                        FireRemoved(item);
+                        OnRemoved(item);
                     }
             }
         }
@@ -193,7 +193,7 @@ namespace Cdh.Toolkit.Collections.Observable
                     if (match(item))
                     {
                         Decorated.Remove(item);
-                        FireRemoved(item);
+                        OnRemoved(item);
 
                         count++;
                     }
@@ -233,12 +233,12 @@ namespace Cdh.Toolkit.Collections.Observable
                     if (Decorated.Contains(item))
                     {
                         Decorated.Remove(item);
-                        FireRemoved(item);
+                        OnRemoved(item);
                     }
                     else
                     {
                         Decorated.Add(item);
-                        FireAdded(item);
+                        OnAdded(item);
                     }
                 }
             }
@@ -259,7 +259,7 @@ namespace Cdh.Toolkit.Collections.Observable
             {
                 foreach (T item in other)
                     if (Decorated.Add(item))
-                        FireAdded(item);
+                        OnAdded(item);
             }
         }
 

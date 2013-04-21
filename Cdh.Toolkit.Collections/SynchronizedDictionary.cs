@@ -67,6 +67,16 @@ namespace Cdh.Toolkit.Collections
             Initialize();
         }
 
+        protected sealed override void ValidateItem(KeyValuePair<TKey, TValue> item)
+        {
+            ValidateKey(item.Key);
+            ValidateValue(item.Value);
+        }
+
+        protected virtual void ValidateKey(TKey key) { }
+
+        protected virtual void ValidateValue(TValue value) { }
+
         private void Initialize()
         {
             // The base collections are already read-only, but wrapping the
@@ -89,6 +99,9 @@ namespace Cdh.Toolkit.Collections
 
         public virtual void Add(TKey key, TValue value)
         {
+            ValidateKey(key);
+            ValidateValue(value);
+
             using (Lock.Write())
                 Decorated.Add(key, value);
         }
@@ -124,6 +137,9 @@ namespace Cdh.Toolkit.Collections
             }
             set
             {
+                ValidateKey(key);
+                ValidateValue(value);
+
                 using (Lock.Write())
                     Decorated[key] = value;
             }
