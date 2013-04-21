@@ -74,6 +74,7 @@
     <Compile Include="SynchronizedList.cs" />
     <Compile Include="Builders\DictionaryBuilder.cs" />
     <Compile Include="ReferenceEqualityComparerBase.cs" />
+    <Compile Include="SelfPopulatingDictionary.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Cdh.Toolkit.Extensions\Cdh.Toolkit.Extensions.csproj">
