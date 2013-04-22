@@ -111,5 +111,32 @@ namespace Cdh.Toolkit.Extensions.Enumerable
         {
             return Join(Delimit(self, delimiter));
         }
+
+        public static IEnumerable<IList<T>> Batch<T>(this IEnumerable<T> self, int batchSize, bool includeRemainder)
+        {
+            Check.ArgumentIsNotNull(self, "self");
+
+            if (batchSize < 1) { throw new ArgumentOutOfRangeException("batchSize", "Must be >= 1."); }
+
+            return CreateBatchEnumerable(self, batchSize, includeRemainder);
+        }
+
+        public static IEnumerable<IList<T>> CreateBatchEnumerable<T>(this IEnumerable<T> self, int batchSize, bool includeRemainder)
+        {
+            var batch = new List<T>(batchSize);
+
+            foreach (var i in self) {
+                batch.Add(i);
+
+                if (batch.Count == batchSize) {
+                    yield return batch;
+                    batch = new List<T>(batchSize);
+                }
+            }
+
+            if (includeRemainder && batch.Count != 0) {
+                yield return batch;
+            }
+        }
     }
 }
