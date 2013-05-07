@@ -138,5 +138,20 @@ namespace Cdh.Toolkit.Extensions.Enumerable
                 yield return batch;
             }
         }
+
+        public static T SingleOrDefaultNoThrow<T>(this IEnumerable<T> self)
+        {
+            Check.ArgumentIsNotNull(self, "self");
+
+            using (var e = self.GetEnumerator()) {
+                if (!e.MoveNext()) { return default(T); }
+
+                var item = e.Current;
+
+                if (e.MoveNext()) { return default(T); }
+
+                return item;
+            }
+        }
     }
 }
