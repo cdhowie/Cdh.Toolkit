@@ -30,9 +30,12 @@ using System.Linq;
 using System.Threading;
 
 using Cdh.Toolkit.Extensions.ReaderWriterLockSlim;
+using System.Diagnostics;
 
 namespace Cdh.Toolkit.Collections.Observable
 {
+    [DebuggerDisplay("Count = {Count}")]
+    [DebuggerTypeProxy(typeof(CollectionDebuggerView<>))]
     public class ObservableHashSet<T> : ObservableCollection<T>, IObservableCollection<T>
     {
         protected new HashSet<T> Decorated { get; private set; }

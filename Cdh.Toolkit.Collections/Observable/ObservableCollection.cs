@@ -32,9 +32,12 @@ using System.Threading;
 
 using Cdh.Toolkit.Extensions.Events;
 using Cdh.Toolkit.Extensions.ReaderWriterLockSlim;
+using System.Diagnostics;
 
 namespace Cdh.Toolkit.Collections.Observable
 {
+    [DebuggerDisplay("Count = {Count}")]
+    [DebuggerTypeProxy(typeof(CollectionDebuggerView<>))]
     public class ObservableCollection<T> : SynchronizedCollection<T>, IObservableCollection<T>
     {
         public ObservableCollection(ICollection<T> collection, EnumerateBehavior behavior, ReaderWriterLockSlim @lock)

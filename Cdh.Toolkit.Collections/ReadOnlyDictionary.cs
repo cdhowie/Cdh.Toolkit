@@ -27,9 +27,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections;
+using System.Diagnostics;
 
 namespace Cdh.Toolkit.Collections
 {
+    [DebuggerDisplay("Count = {Count}")]
+    [DebuggerTypeProxy(typeof(CollectionDebuggerView<,>))]
     public class ReadOnlyDictionary<TKey, TValue> :
         ReadOnlyCollection<KeyValuePair<TKey, TValue>>,
         IDictionary<TKey, TValue>,

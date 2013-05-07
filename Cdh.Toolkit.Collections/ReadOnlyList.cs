@@ -27,9 +27,12 @@
 using System;
 using System.Collections.Generic;
 using System.Collections;
+using System.Diagnostics;
 
 namespace Cdh.Toolkit.Collections
 {
+    [DebuggerDisplay("Count = {Count}")]
+    [DebuggerTypeProxy(typeof(CollectionDebuggerView<>))]
     public class ReadOnlyList<T> : ReadOnlyCollection<T>, IList<T>, IList
     {
         protected new IList<T> Decorated { get; private set; }

@@ -5,9 +5,12 @@ using System.Text;
 using System.Threading;
 using Cdh.Toolkit.Extensions.Events;
 using Cdh.Toolkit.Extensions.ReaderWriterLockSlim;
+using System.Diagnostics;
 
 namespace Cdh.Toolkit.Collections.Observable
 {
+    [DebuggerDisplay("Count = {Count}")]
+    [DebuggerTypeProxy(typeof(CollectionDebuggerView<>))]
     public class ObservableList<T> : SynchronizedList<T>, IObservableList<T>
     {
         public ObservableList(IList<T> list, EnumerateBehavior behavior, ReaderWriterLockSlim @lock)

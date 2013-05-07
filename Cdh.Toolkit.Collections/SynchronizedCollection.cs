@@ -36,6 +36,7 @@ using Cdh.Toolkit.Extensions.ReaderWriterLockSlim;
 namespace Cdh.Toolkit.Collections
 {
     [DebuggerDisplay("Count = {Count}")]
+    [DebuggerTypeProxy(typeof(CollectionDebuggerView<>))]
     public class SynchronizedCollection<T> : ICollection<T>
     {
         public ReaderWriterLockSlim Lock { get; private set; }

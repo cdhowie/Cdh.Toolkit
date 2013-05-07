@@ -29,9 +29,12 @@ using System.Collections.Generic;
 using System.Threading;
 
 using Cdh.Toolkit.Extensions.ReaderWriterLockSlim;
+using System.Diagnostics;
 
 namespace Cdh.Toolkit.Collections
 {
+    [DebuggerDisplay("Count = {Count}")]
+    [DebuggerTypeProxy(typeof(CollectionDebuggerView<>))]
     public class SynchronizedDictionary<TKey, TValue> :
         SynchronizedCollection<KeyValuePair<TKey, TValue>>, IDictionary<TKey, TValue>
     {

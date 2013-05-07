@@ -75,12 +75,7 @@
     <Compile Include="Builders\DictionaryBuilder.cs" />
     <Compile Include="ReferenceEqualityComparerBase.cs" />
     <Compile Include="SelfPopulatingDictionary.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Cdh.Toolkit.Extensions\Cdh.Toolkit.Extensions.csproj">
-      <Project>{1F804DDB-FFB0-4D57-B5DD-03389FAC1836}</Project>
-      <Name>Cdh.Toolkit.Extensions</Name>
-    </ProjectReference>
+    <Compile Include="CollectionDebuggerView.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -92,5 +87,11 @@
   -->
   <ItemGroup>
     <Folder Include="Builders\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Cdh.Toolkit.Extensions\Cdh.Toolkit.Extensions.csproj">
+      <Project>{1F804DDB-FFB0-4D57-B5DD-03389FAC1836}</Project>
+      <Name>Cdh.Toolkit.Extensions</Name>
+    </ProjectReference>
   </ItemGroup>
 </Project>

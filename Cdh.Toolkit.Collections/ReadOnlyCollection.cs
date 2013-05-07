@@ -32,6 +32,7 @@ using System.Diagnostics;
 namespace Cdh.Toolkit.Collections
 {
     [DebuggerDisplay("Count = {Count}")]
+    [DebuggerTypeProxy(typeof(CollectionDebuggerView<>))]
     public class ReadOnlyCollection<T> : ICollection<T>, ICollection
     {
         protected ICollection<T> Decorated { get; private set; }
