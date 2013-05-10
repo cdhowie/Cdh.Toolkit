@@ -121,7 +121,7 @@ namespace Cdh.Toolkit.Extensions.Enumerable
             return CreateBatchEnumerable(self, batchSize, includeRemainder);
         }
 
-        public static IEnumerable<IList<T>> CreateBatchEnumerable<T>(this IEnumerable<T> self, int batchSize, bool includeRemainder)
+        private static IEnumerable<IList<T>> CreateBatchEnumerable<T>(this IEnumerable<T> self, int batchSize, bool includeRemainder)
         {
             var batch = new List<T>(batchSize);
 
