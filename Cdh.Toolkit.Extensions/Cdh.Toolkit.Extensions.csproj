@@ -63,6 +63,7 @@
     <Compile Include="Xml.Linq\XElementExtensions.cs" />
     <Compile Include="Delegates\Extensions.cs" />
     <Compile Include="Delegates\Defer.cs" />
+    <Compile Include="StringBuilder\Extensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -74,5 +75,6 @@
   -->
   <ItemGroup>
     <Folder Include="Delegates\" />
+    <Folder Include="StringBuilder\" />
   </ItemGroup>
 </Project>

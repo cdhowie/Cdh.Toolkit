@@ -98,7 +98,7 @@ namespace Cdh.Toolkit.Extensions.Enumerable
         {
             Check.ArgumentIsNotNull(self, "self");
 
-            var sb = new StringBuilder();
+            var sb = new System.Text.StringBuilder();
 
             foreach (var str in self)
                 if (str != null)
