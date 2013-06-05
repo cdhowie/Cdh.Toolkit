@@ -33,5 +33,33 @@ namespace Cdh.Toolkit.Extensions
                     typeof(T).FullName, value.GetType().FullName),
                 paramName);
         }
+
+        public static IEnumerable<T> SequenceArgumentElementsAreNotNull<T>(IEnumerable<T> sequence, string paramName)
+            where T : class
+        {
+            Check.ArgumentIsNotNull(sequence, paramName);
+
+            return Sequence<T>(sequence, i => {
+                if (i == null) {
+                    throw new ArgumentException("Contains a null element.", paramName);
+                }
+            });
+        }
+
+        public static IEnumerable<T> Sequence<T>(IEnumerable<T> sequence, Action<T> validator)
+        {
+            Check.ArgumentIsNotNull(sequence, "sequence");
+            Check.ArgumentIsNotNull(validator, "validator");
+
+            return CreateSequenceEnumerable<T>(sequence, validator);
+        }
+
+        private static IEnumerable<T> CreateSequenceEnumerable<T>(IEnumerable<T> sequence, Action<T> validator)
+        {
+            foreach (var i in sequence) {
+                validator(i);
+                yield return i;
+            }
+        }
     }
 }
