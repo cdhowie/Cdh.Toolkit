@@ -40,7 +40,12 @@ namespace Cdh.Toolkit.Services
             get { return sync; }
         }
 
-        protected bool ThreadRunning { get; private set; }
+        protected volatile bool threadRunning = false;
+
+        protected bool ThreadRunning
+        {
+            get { return threadRunning; }
+        }
 
         private Thread thread = null;
 
@@ -52,13 +57,13 @@ namespace Cdh.Toolkit.Services
         {
             lock (sync)
             {
-                if (IsRunning || ThreadRunning)
+                if (isRunning || threadRunning)
                     return;
 
                 thread = new Thread(ThreadEntryPoint);
                 thread.IsBackground = IsBackgroundService;
-                IsRunning = true;
-                ThreadRunning = true;
+                isRunning = true;
+                threadRunning = true;
 
                 thread.Start();
             }
@@ -70,12 +75,12 @@ namespace Cdh.Toolkit.Services
 
             lock (sync)
             {
-                if (ThreadRunning == false)
+                if (!threadRunning)
                     return;
 
                 threadCopy = thread;
 
-                ThreadRunning = false;
+                threadRunning = false;
                 StopRequested();
             }
 
@@ -94,10 +99,12 @@ namespace Cdh.Toolkit.Services
             finally {
                 lock (sync) {
                     thread = null;
-                    ThreadRunning = false;
-                    IsRunning = false;
+                    threadRunning = false;
+                    isRunning = false;
 
                     Cleanup();
+
+                    Monitor.PulseAll(sync);
                 }
             }
         }
@@ -108,7 +115,23 @@ namespace Cdh.Toolkit.Services
         {
         }
 
-        public bool IsRunning { get; private set; }
+        private volatile bool isRunning = false;
+
+        public bool IsRunning
+        {
+            get { return isRunning; }
+        }
+
+        public void WaitForStop()
+        {
+            if (!isRunning) { return; }
+
+            lock (sync) {
+                while (isRunning) {
+                    Monitor.Wait(sync);
+                }
+            }
+        }
 
         #endregion
     }
