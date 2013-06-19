@@ -48,56 +48,63 @@ namespace Cdh.Toolkit.BuildTasks
 
         public override bool Execute()
         {
-            using (var outputFile = File.CreateText(OutputFile)) {
-                string headRef;
-                using (var headFile = File.OpenText(Path.Combine(Repository, "HEAD")))
-                    headRef = headFile.ReadLine();
-   
-                string head;
+            string headRef;
+            using (var headFile = File.OpenText(Path.Combine(Repository, "HEAD")))
+                headRef = headFile.ReadLine();
 
-                if (headRef.StartsWith("ref: ")) {
-                    string refPath = headRef.Substring(5);
-                    string refFilePath = refPath.Replace('/', Path.DirectorySeparatorChar);
+            string head;
 
-                    try {
-                        using (var refFile = File.OpenText(Path.Combine(Repository, refFilePath)))
-                            head = refFile.ReadLine();
-                    } catch (FileNotFoundException) {
-                        // Maybe the ref is packed?
+            if (headRef.StartsWith("ref: ")) {
+                string refPath = headRef.Substring(5);
+                string refFilePath = refPath.Replace('/', Path.DirectorySeparatorChar);
 
-                        using (var packedRef = File.OpenText(Path.Combine(Repository, "packed-refs"))) {
-                            string line;
+                try {
+                    using (var refFile = File.OpenText(Path.Combine(Repository, refFilePath)))
+                        head = refFile.ReadLine();
+                } catch (FileNotFoundException) {
+                    // Maybe the ref is packed?
 
-                            head = null;
+                    using (var packedRef = File.OpenText(Path.Combine(Repository, "packed-refs"))) {
+                        string line;
 
-                            while ((line = packedRef.ReadLine()) != null) {
-                                if (line.StartsWith("#")) {
-                                    continue;
-                                }
+                        head = null;
 
-                                var parts = line.Split(new[] { ' ' }, 2);
-
-                                if (parts.Length == 2 && refPath.Equals(parts[1])) {
-                                    head = parts[0];
-                                    break;
-                                }
+                        while ((line = packedRef.ReadLine()) != null) {
+                            if (line.StartsWith("#")) {
+                                continue;
                             }
 
-                            if (head == null) {
-                                throw new ApplicationException(string.Format("Unable to find ref {0} in packed refs.", headRef));
+                            var parts = line.Split(new[] { ' ' }, 2);
+
+                            if (parts.Length == 2 && refPath.Equals(parts[1])) {
+                                head = parts[0];
+                                break;
                             }
                         }
+
+                        if (head == null) {
+                            throw new ApplicationException(string.Format("Unable to find ref {0} in packed refs.", headRef));
+                        }
                     }
-                } else {
-                    head = headRef;
                 }
-
-                if (!validationRegex.IsMatch(head)) {
-                    throw new ApplicationException(string.Format("Located commit ID \"{0}\" is not valid.", head));
-                }
-
-                outputFile.Write(head);
+            } else {
+                head = headRef;
             }
+
+            if (!validationRegex.IsMatch(head)) {
+                throw new ApplicationException(string.Format("Located commit ID \"{0}\" is not valid.", head));
+            }
+
+            // Avoid rewriting the file if it exists and has exactly the same content.  This avoids unnecessary rebuilds.
+            try {
+                if (File.ReadAllText(OutputFile) == head) {
+                    return true;
+                }
+            } catch {
+                // On any error just continue and try to replace the file.
+            }
+
+            File.WriteAllText(OutputFile, head);
 
             return true;
         }
