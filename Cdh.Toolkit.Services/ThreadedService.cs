@@ -102,9 +102,12 @@ namespace Cdh.Toolkit.Services
                     threadRunning = false;
                     isRunning = false;
 
-                    Cleanup();
-
-                    Monitor.PulseAll(sync);
+                    // I don't like nesting "try" but we need to make sure anyone blocked in WaitForStop() is released.
+                    try {
+                        Cleanup();
+                    } finally {
+                        Monitor.PulseAll(sync);
+                    }
                 }
             }
         }
