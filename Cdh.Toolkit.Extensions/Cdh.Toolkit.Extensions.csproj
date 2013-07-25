@@ -65,6 +65,7 @@
     <Compile Include="Delegates\Defer.cs" />
     <Compile Include="StringBuilder\Extensions.cs" />
     <Compile Include="Threading\Gate.cs" />
+    <Compile Include="Threading\Disposable.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
