@@ -52,6 +52,17 @@ namespace Cdh.Toolkit.Services
                 serviceManager.UnregisterService(service);
             }
         }
+
+        public static void ForEach<T>(this IServiceManager serviceManager, Action<T> action)
+            where T : IService
+        {
+            Check.ArgumentIsNotNull(serviceManager, "serviceManager");
+            Check.ArgumentIsNotNull(action, "action");
+
+            foreach (var service in serviceManager.GetServices<T>()) {
+                action(service);
+            }
+        }
     }
 }
 
