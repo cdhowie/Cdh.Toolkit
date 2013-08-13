@@ -66,6 +66,8 @@
     <Compile Include="StringBuilder\Extensions.cs" />
     <Compile Include="Threading\Gate.cs" />
     <Compile Include="Threading\Disposable.cs" />
+    <Compile Include="ReferenceCounting\ReferenceCount.cs" />
+    <Compile Include="ReferenceCounting\CountedReference.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -79,5 +81,6 @@
     <Folder Include="Delegates\" />
     <Folder Include="StringBuilder\" />
     <Folder Include="Threading\" />
+    <Folder Include="ReferenceCounting\" />
   </ItemGroup>
 </Project>
