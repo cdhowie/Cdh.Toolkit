@@ -19,9 +19,9 @@ namespace Cdh.Toolkit.Extensions.Text
             }
         }
 
-        public bool Hyphenate { get; private set; }
+        public bool Hyphenate { get; set; }
 
-        public bool PreserveWhitespace { get; private set; }
+        public bool PreserveWhitespace { get; set; }
 
         public Folder()
         {
