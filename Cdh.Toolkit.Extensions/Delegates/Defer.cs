@@ -90,9 +90,9 @@ namespace Cdh.Toolkit.Extensions.Delegates
                 processor.BeginInvoke(result => processor.EndInvoke(result), null);
             }
 
-            public void Until(DateTime dateTime)
+            public void Until(System.DateTime dateTime)
             {
-                var span = dateTime.ToUniversalTime() - DateTime.UtcNow;
+                var span = dateTime.ToUniversalTime() - System.DateTime.UtcNow;
 
                 if (span.CompareTo(TimeSpan.Zero) <= 0) {
                     throw new ArgumentOutOfRangeException("dateTime", dateTime, "Must represent a point of time in the future.");
