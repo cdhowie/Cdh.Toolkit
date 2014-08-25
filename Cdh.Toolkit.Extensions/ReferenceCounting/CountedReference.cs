@@ -31,20 +31,7 @@ namespace Cdh.Toolkit.Extensions.ReferenceCounting
             referenceCount = new ReferenceCount();
         }
 
-        private CountedReference(CountedReference<T> other)
-        {
-            Check.ArgumentIsNotNull(other, "other");
-
-            var otherObj = other.obj;
-            var otherCount = other.referenceCount;
-
-            if (otherObj == null || otherCount == null || otherCount.AddReference() == 0) {
-                Disposed();
-            }
-
-            obj = otherObj;
-            referenceCount = otherCount;
-        }
+        private CountedReference() { }
 
         private void Disposed()
         {
@@ -73,16 +60,27 @@ namespace Cdh.Toolkit.Extensions.ReferenceCounting
 
         public CountedReference<T> CopyReference()
         {
-            return new CountedReference<T>(this);
+            var copy = TryCopyReference();
+            if (copy == null) {
+                Disposed();
+            }
+
+            return copy;
         }
 
-        public CountedReference<T> MaybeCopyReference()
+        public CountedReference<T> TryCopyReference()
         {
-            try {
-                return new CountedReference<T>(this);
-            } catch (ObjectDisposedException) {
+            var otherObj = obj;
+            var otherCount = referenceCount;
+
+            if (otherObj == null || otherCount == null || otherCount.AddReference() == 0) {
                 return null;
             }
+
+            return new CountedReference<T>() {
+                obj = otherObj,
+                referenceCount = otherCount
+            };
         }
     }
 }

@@ -70,6 +70,7 @@
     <Compile Include="ReferenceCounting\CountedReference.cs" />
     <Compile Include="Text\Folder.cs" />
     <Compile Include="DateTime\DateTimeUtility.cs" />
+    <Compile Include="ReferenceCounting\CountedReferenceExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
