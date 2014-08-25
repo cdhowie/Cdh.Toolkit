@@ -29,7 +29,18 @@ namespace Cdh.Toolkit.Extensions.ReferenceCounting
 {
     public static class CountedReferenceExtensions
     {
-        public static bool RunUnlessDisposed<T>(this CountedReference<T> self, Action<T> action)
+        public static void Run<T>(this CountedReference<T> self, Action<T> action)
+            where T : class, IDisposable
+        {
+            Check.ArgumentIsNotNull(self, "self");
+            Check.ArgumentIsNotNull(action, "action");
+
+            using (var reference = self.CopyReference()) {
+                action(reference.Object);
+            }
+        }
+
+        public static bool TryRun<T>(this CountedReference<T> self, Action<T> action)
             where T : class, IDisposable
         {
             Check.ArgumentIsNotNull(self, "self");
