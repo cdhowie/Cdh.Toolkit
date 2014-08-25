@@ -1,31 +1,40 @@
 using System;
 using System.Threading;
 
+#pragma warning disable 420
+
 namespace Cdh.Toolkit.Extensions.ReferenceCounting
 {
     internal sealed class ReferenceCount
     {
-        private int referenceCount = 1;
+        private volatile int referenceCount = 1;
 
         public ReferenceCount() { }
 
         public int AddReference()
         {
-            // Locking on this is usually discouraged but in this case the use of this class is limited (as it is
-            // internal) and we know that it will never be locked on.
-            lock (this) {
-                if (referenceCount == 0) {
-                    return 0;
-                }
-
-                return ++referenceCount;
-            }
+            return AdjustCount(1);
         }
 
         public int RemoveReference()
         {
-            lock (this) {
-                return --referenceCount;
+            return AdjustCount(-1);
+        }
+
+        private int AdjustCount(int delta)
+        {
+            for (;;) {
+                var count = referenceCount;
+
+                if (count == 0) {
+                    return 0;
+                }
+
+                var newCount = checked(count + delta);
+
+                if (Interlocked.CompareExchange(ref referenceCount, newCount, count) == count) {
+                    return newCount;
+                }
             }
         }
     }
