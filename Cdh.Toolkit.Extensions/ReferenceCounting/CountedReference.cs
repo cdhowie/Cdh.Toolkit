@@ -1,12 +1,14 @@
 using System;
 using System.Threading;
 
+#pragma warning disable 420
+
 namespace Cdh.Toolkit.Extensions.ReferenceCounting
 {
     public sealed class CountedReference<T> : IDisposable
         where T : class, IDisposable
     {
-        private T obj;
+        private volatile T obj;
 
         public T Object
         {
