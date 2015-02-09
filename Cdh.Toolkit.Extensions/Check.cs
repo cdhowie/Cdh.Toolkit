@@ -7,10 +7,13 @@ namespace Cdh.Toolkit.Extensions
 {
     public static class Check
     {
-        public static void ArgumentIsNotNull(object value, string paramName)
+        public static T ArgumentIsNotNull<T>(T value, string paramName)
+            where T : class
         {
             if (value == null)
                 throw new ArgumentNullException(paramName);
+
+            return value;
         }
 
         public static T ArgumentIs<T>(object value, string paramName)
