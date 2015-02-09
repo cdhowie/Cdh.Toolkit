@@ -74,6 +74,7 @@
     <Compile Include="ReferenceCounting\CountedReferenceExtensions.cs" />
     <Compile Include="Web\NameValueCollectionExtensions.cs" />
     <Compile Include="Web\HttpWebRequestExtensions.cs" />
+    <Compile Include="Nullable\NullableUtility.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -91,5 +92,6 @@
     <Folder Include="Text\" />
     <Folder Include="DateTime\" />
     <Folder Include="Web\" />
+    <Folder Include="Nullable\" />
   </ItemGroup>
 </Project>
