@@ -47,6 +47,7 @@
     </Reference>
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
+    <Reference Include="System.Web" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Check.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Text\Folder.cs" />
     <Compile Include="DateTime\DateTimeUtility.cs" />
     <Compile Include="ReferenceCounting\CountedReferenceExtensions.cs" />
+    <Compile Include="Web\NameValueCollectionExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
@@ -87,5 +89,6 @@
     <Folder Include="ReferenceCounting\" />
     <Folder Include="Text\" />
     <Folder Include="DateTime\" />
+    <Folder Include="Web\" />
   </ItemGroup>
 </Project>
