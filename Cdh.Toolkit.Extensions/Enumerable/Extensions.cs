@@ -153,5 +153,10 @@ namespace Cdh.Toolkit.Extensions.Enumerable
                 return item;
             }
         }
+
+        public static IEnumerable<T> EmptyIfNull<T>(this IEnumerable<T> self)
+        {
+            return self ?? System.Linq.Enumerable.Empty<T>();
+        }
     }
 }
