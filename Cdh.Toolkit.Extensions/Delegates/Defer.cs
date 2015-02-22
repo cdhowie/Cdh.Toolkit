@@ -71,9 +71,7 @@ namespace Cdh.Toolkit.Extensions.Delegates
 
             public void Immediately()
             {
-                Action processor = Execute;
-
-                processor.BeginInvoke(result => processor.EndInvoke(result), null);
+                ThreadPool.QueueUserWorkItem(state => Execute());
             }
 
             public void For(TimeSpan timeSpan)
@@ -82,12 +80,15 @@ namespace Cdh.Toolkit.Extensions.Delegates
                     throw new ArgumentOutOfRangeException("timeSpan", timeSpan, "Must be greater than TimeSpan.Zero.");
                 }
 
-                Action processor = delegate {
-                    Thread.Sleep(timeSpan);
+                Timer timer = null;
+                timer = new Timer(state => {
+                    timer.Dispose();
                     Execute();
-                };
+                });
 
-                processor.BeginInvoke(result => processor.EndInvoke(result), null);
+                // We start the timer in a separate step to ensure that the Timer object has been assigned to the timer
+                // local before the callback lambda gets invoked.  (Otherwise, we might NRE on timer.Dispose().)
+                timer.Change(timeSpan, TimeSpan.FromMilliseconds(-1));
             }
 
             public void Until(System.DateTime dateTime)
